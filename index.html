@@ -8,37 +8,40 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#f1f5f9;font-family:Arial,sans-serif}
-    header{background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff;padding:20px;text-align:center}
+    *{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:#172033;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+    header{padding:24px 20px 18px;text-align:center;background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff}
+    header h1{margin:0 0 6px;font-size:clamp(24px,4vw,32px)}header p{margin:0;opacity:.9}
     .container{max-width:1400px;margin:20px auto;padding:0 16px}
-    .panel{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px #0000000d}
+    .panel{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 8px 30px #1e3a8a0d}
     h2{margin:0 0 12px;font-size:1.1rem}
     .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
     label{display:block;font-weight:700;font-size:.85rem;margin-bottom:4px}
     input,select{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}
-    button{border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:700;margin:4px 4px 0 0}
+    button{border:0;border-radius:10px;padding:10px 15px;cursor:pointer;font-weight:700;background:#e8eef8;color:#172033;margin:4px 4px 0 0}
+    button:hover{filter:brightness(.95)}
     .blue{background:#2563eb;color:#fff}.green{background:#059669;color:#fff}.orange{background:#ea580c;color:#fff}.purple{background:#7c3aed;color:#fff}.slate{background:#475569;color:#fff}
     .hint{font-size:.85rem;color:#64748b;margin-top:8px}
     .layout{display:grid;grid-template-columns:300px 1fr;gap:16px}
-    .student-list{max-height:600px;overflow:auto;border:1px solid #cbd5e1;border-radius:8px;padding:8px;background:#f8fafc}
-    .student{background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;padding:8px;margin-bottom:6px;cursor:move}
-    .student:active{cursor:grabbing}.student.assigned{opacity:.5;background:#e2e8f0}
-    .classroom{background:#fff;border:2px solid #94a3b8;border-radius:12px;padding:16px}
-    .front{background:#e2e8f0;border:2px dashed #64748b;text-align:center;border-radius:6px;padding:8px;margin-bottom:16px;font-weight:700}
-    .seat-grid{display:grid;gap:8px}
-    .seat{min-height:80px;border:2px dashed #94a3b8;border-radius:8px;background:#f8fafc;padding:6px;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
-    .seat.dragover{background:#dbeafe;border:3px solid #2563eb}
-    .seat-number{position:absolute;top:3px;left:5px;font-size:.7rem;color:#64748b}
-    .seat.empty{color:#94a3b8}
-    .student-card{font-size:.85rem;cursor:move;padding:6px;width:100%;border-radius:4px;background:#eff6ff;border:1px solid #93c5fd}
-    .student-card:active{cursor:grabbing}
-    .remove{position:absolute;right:3px;top:2px;border:0;background:transparent;color:#dc2626;padding:0 3px;font-size:1rem;cursor:pointer}
-    .drop-msg{margin:0 0 10px;padding:8px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:.85rem}
-    .stats{display:flex;gap:12px;font-weight:700;margin-bottom:8px}
-    .status{margin-top:10px;padding:10px;border-radius:6px;font-size:.85rem}
+    .student-list{max-height:600px;overflow:auto;border:1px solid #cbd5e1;border-radius:10px;padding:8px;background:#f8fafc}
+    .student{background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:9px;margin-bottom:7px;cursor:grab;user-select:none}
+    .student:active{cursor:grabbing}.student.dragging{opacity:.35}.student.assigned{opacity:.5;background:#e2e8f0}
+    .classroom{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:20px;box-shadow:0 8px 30px #1e3a8a0d}
+    .front{margin:0 auto 18px;text-align:center;background:#172033;color:#fff;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}
+    .seat-grid{display:grid;gap:10px}
+    .seat{min-height:92px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}
+    .seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}
+    .seat.dragging{opacity:.35}.seat.over{border-color:#2563eb;background:#eff6ff;transform:scale(1.02)}
+    .seat-number{font-size:12px;color:#64748b}
+    .student-card{font-size:.85rem;cursor:grab;padding:7px;width:100%;border-radius:6px;background:#eff6ff;border:1px solid #93c5fd}
+    .student-card:active{cursor:grabbing}.student-card.dragging{opacity:.3}
+    .student-card strong{display:block;font-size:16px;font-weight:800;margin:5px 0 3px}
+    .remove{position:absolute;right:6px;top:4px;border:0;background:transparent;color:#dc2626;padding:0 4px;font-size:1.1rem;cursor:pointer}
+    .drop-msg{margin:0 0 10px;padding:9px;border-radius:8px;background:#eff6ff;color:#1d4ed8;font-size:.85rem}
+    .stats{display:flex;gap:12px;font-weight:700;margin-bottom:8px;color:#64748b}
+    .status{margin-top:10px;padding:10px;border-radius:8px;font-size:.85rem}
     .status.success{background:#dcfce7;color:#166534}.status.error{background:#fee2e2;color:#991b1b}.status.info{background:#dbeafe;color:#1e40af}
     @media(max-width:900px){.layout{grid-template-columns:1fr}.student-list{max-height:250px}}
-    @media print{header,.controls,.github-section,.student-panel,.hint,.drop-msg{display:none!important}.container{margin:0}.panel{box-shadow:none}.classroom{border:1px solid #000}}
+    @media print{header,.controls,.github-section,.student-panel,.hint,.drop-msg{display:none!important}.container{margin:0}.panel{box-shadow:none;border:1px solid #000}.classroom{border:1px solid #000;box-shadow:none}}
   </style>
 </head>
 <body>
@@ -97,20 +100,84 @@
   </div>
 </main>
 <script>
-var students=[],seats=[],cols=6;
+var students=[],seats=[],cols=6,dragged=null;
 function $(id){return document.getElementById(id);}
 function esc(v){return String(v||'').replace(/[&<>'"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])})}
 function showStatus(type,msg){var el=$('ghStatus');el.style.display='block';el.className='status '+type;el.textContent=msg}
 function updateStats(){$('total').textContent=students.length+' 人';$('assigned').textContent=students.filter(function(s){return s.seat!==null}).length+' 入座'}
-function render(){renderRoster();renderSeats()}
-function renderRoster(){var list=$('studentList');list.innerHTML='';students.forEach(function(s){var d=document.createElement('div');d.className='student'+(s.seat!==null?' assigned':'');d.draggable=true;d.innerHTML='<strong>'+esc(s.name)+'</strong><br><small>'+esc(s.className)+' '+esc(s.number)+'</small>';d.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);d.classList.add('dragging')};d.ondragend=function(){d.classList.remove('dragging')};list.appendChild(d)});updateStats()}
-function renderSeats(){var grid=$('seatGrid');grid.innerHTML='';grid.style.gridTemplateColumns='repeat('+cols+',1fr)';for(var i=0;i<seats.length;i++){var id=seats[i],s=id&&students.find(function(x){return x.id===id});var seat=document.createElement('div');seat.className='seat'+(s?'':' empty');seat.innerHTML='<span class="seat-number">'+(i+1)+'</span>'+(s?'<div class="student-card" draggable="true"><button class="remove">x</button><strong>'+esc(s.name)+'</strong></div>':'空位');seat.ondragover=function(e){e.preventDefault();seat.classList.add('dragover')};seat.ondragleave=function(){seat.classList.remove('dragover')};seat.ondrop=function(e){e.preventDefault();seat.classList.remove('dragover');var id=e.dataTransfer.getData('text/plain');if(id)swap(id,i)};if(s){var card=seat.querySelector('.student-card');card.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);card.classList.add('dragging')};card.ondragend=function(){card.classList.remove('dragging')};seat.querySelector('.remove').onclick=function(e){e.stopPropagation();remove(i)}};grid.appendChild(seat)}}
+
+function render(){
+  var list=$('studentList');
+  list.innerHTML='';
+  students.forEach(function(s){
+    var d=document.createElement('div');
+    d.className='student'+(s.seat!==null?' assigned':'');
+    d.draggable=!!s.seat;
+    d.innerHTML='<strong>'+esc(s.name)+'</strong><small>班級 '+esc(s.className)+'｜座號 '+esc(s.number)+'</small>';
+    if(s.seat!==null){
+      d.ondragstart=function(e){dragged=s.seat;d.classList.add('dragging');e.dataTransfer.effectAllowed='move'};
+      d.ondragend=function(){dragged=null;d.classList.remove('dragging')}
+    }
+    list.appendChild(d)
+  });
+  updateStats();
+  
+  var grid=$('seatGrid');
+  grid.innerHTML='';
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  
+  for(var i=0;i<seats.length;i++){
+    var id=seats[i],s=id&&students.find(function(x){return x.id===id});
+    var seat=document.createElement('div');
+    seat.className='seat'+(s?'':' empty');
+    seat.dataset.index=i;
+    seat.innerHTML='<span class="seat-number">'+(i+1)+'</span>'+(s?'<div class="student-card"><button class="remove">x</button><strong>'+esc(s.name)+'</strong><span>'+esc(s.className)+' '+esc(s.number)+'</span><br><small>'+esc(s.id)+'</small></div>':'空位');
+    
+    if(s){
+      seat.draggable=true;
+      seat.ondragstart=function(e){dragged=i;seat.classList.add('dragging');e.dataTransfer.effectAllowed='move'};
+      seat.ondragend=function(){dragged=null;seat.classList.remove('dragging');document.querySelectorAll('.over').forEach(function(x){x.classList.remove('over')})};
+      var card=seat.querySelector('.student-card');
+      card.ondragstart=function(e){e.stopPropagation();dragged=i;card.classList.add('dragging')};
+      card.ondragend=function(){card.classList.remove('dragging')};
+      seat.querySelector('.remove').onclick=function(e){e.stopPropagation();remove(i)}
+    }
+    
+    seat.ondragover=function(e){e.preventDefault();seat.classList.add('over')};
+    seat.ondragleave=function(){seat.classList.remove('over')};
+    seat.ondrop=function(e){e.preventDefault();seat.classList.remove('over');if(dragged!==null&&dragged!==i){swap(dragged,i)}};
+    
+    grid.appendChild(seat)
+  }
+}
+
 function createGrid(){cols=Number($('cols').value);var rows=Math.ceil(students.length/cols);seats=Array(rows*cols).fill(null);students.forEach(function(s){s.seat=null});render()}
 function remove(i){var id=seats[i],s=students.find(function(x){return x.id===id});if(s)s.seat=null;seats[i]=null;render()}
-function swap(id,target){var moving=students.find(function(s){return s.id===id});if(!moving)return;var source=moving.seat;if(source===target)return;var targetId=seats[target];if(source!==null&&targetId){var other=students.find(function(s){return s.id===targetId});seats[source]=targetId;seats[target]=id;moving.seat=target;if(other)other.seat=source}else if(source!==null){seats[source]=null;seats[target]=id;moving.seat=target}else{if(targetId){var other=students.find(function(s){return s.id===targetId});if(other)other.seat=null}seats[target]=id;moving.seat=target}render()}
+function swap(source,target){
+  var sourceId=seats[source],targetId=seats[target];
+  if(sourceId&&targetId){
+    var s1=students.find(function(x){return x.id===sourceId}),s2=students.find(function(x){return x.id===targetId});
+    seats[source]=targetId;seats[target]=sourceId;
+    s1.seat=target;s2.seat=source
+  }else if(sourceId&&!targetId){
+    var s1=students.find(function(x){return x.id===sourceId});
+    seats[target]=sourceId;seats[source]=null;
+    s1.seat=target
+  }else if(!sourceId&&targetId){
+    var s2=students.find(function(x){return x.id===targetId});
+    seats[source]=targetId;seats[target]=null;
+    s2.seat=source
+  }
+  render()
+}
 function autoFill(){students.forEach(function(s){s.seat=null});seats.fill(null);var list=[...students];if($('order').value==='number')list.sort(function(a,b){return (a.className+'-'+a.number).localeCompare(b.className+'-'+b.number)});list.forEach(function(s,i){if(i<seats.length){seats[i]=s.id;s.seat=i}});render()}
-$('studentList').ondragover=function(e){e.preventDefault();$('studentList').style.background='#dbeafe'};$('studentList').ondragleave=function(){$('studentList').style.background='#f8fafc'};$('studentList').ondrop=function(e){e.preventDefault();$('studentList').style.background='#f8fafc';var s=students.find(function(x){return x.id===e.dataTransfer.getData('text/plain')});if(s&&s.seat!==null)remove(s.seat)};
+
+$('studentList').ondragover=function(e){e.preventDefault();$('studentList').style.background='#dbeafe'};
+$('studentList').ondragleave=function(){$('studentList').style.background='#f8fafc'};
+$('studentList').ondrop=function(e){e.preventDefault();$('studentList').style.background='#f8fafc';if(dragged!==null)remove(dragged)};
+
 $('fileInput').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});var hi=-1;for(var i=0;i<Math.min(rows.length,5);i++){if(rows[i].some(function(v){return String(v).includes('學號')})){hi=i;break}}if(hi<0)throw new Error('找不到學號');var h=rows[hi].map(function(v){return String(v).trim().toLowerCase()});var ix={id:h.findIndex(function(v){return v.includes('學號')}),cls:h.findIndex(function(v){return v.includes('班級')}),no:h.findIndex(function(v){return v.includes('座號')}),name:h.findIndex(function(v){return v.includes('姓名')})};if(ix.id<0||ix.cls<0||ix.no<0||ix.name<0)throw new Error('缺少欄位');students=rows.slice(hi+1).map(function(r){return{id:String(r[ix.id]||'').trim(),className:String(r[ix.cls]||'').trim(),number:String(r[ix.no]||'').trim(),name:String(r[ix.name]||'').trim(),seat:null}}).filter(function(s){return s.id&&s.name});createGrid();autoFill();showStatus('success','載入 '+students.length+' 人')}catch(err){showStatus('error','失敗：'+err.message)}};r.readAsArrayBuffer(f)};
+
 $('cols').onchange=createGrid;$('autoBtn').onclick=autoFill;$('clearBtn').onclick=function(){students.forEach(function(s){s.seat=null});seats.fill(null);render()};$('title').oninput=function(e){$('chartTitle').textContent=e.target.value};
 $('saveLocalBtn').onclick=function(){localStorage.setItem('seating',JSON.stringify({students:students,seats:seats,cols:cols}));showStatus('success','已儲存')};
 $('loadLocalBtn').onclick=function(){var r=localStorage.getItem('seating');if(!r){showStatus('info','無資料');return}var d=JSON.parse(r);students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','已載入')};
