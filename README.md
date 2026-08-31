@@ -1,6 +1,6 @@
 # 教室座位表產生器｜Classroom Seating Chart Generator
 
-一個可拖放交換、匯出 Excel/PDF，並能直接上傳座位資料到 GitHub 的網頁版教室座位表工具。支援自動從 GitHub 載入最新座位，並在本機儲存設定避免重複輸入 Token。
+可拖放交換、匯出 Excel/PDF，並直接上傳座位資料到 GitHub 的網頁版教室座位表工具。支援自動從 GitHub 載入最新座位，並在本機儲存設定避免重複輸入 Token。
 
 ## 功能特色
 
@@ -102,7 +102,7 @@
 
 ```json
 {
-  "title": "高二上英文座位表 Classroom Seating Chart",
+  "title": "教室座位表 Classroom Seating Chart",
   "updatedAt": "2026-08-31T11:14:00.000Z",
   "totalStudents": 32,
   "layout": {
