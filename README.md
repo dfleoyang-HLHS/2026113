@@ -1,239 +1,29 @@
-{
-  "class": {
-    "name": "113班",
-    "rows": 6,
-    "cols": 6,
-    "total": 32,
-    "students": [
-      {
-        "no": 1,
-        "className": "301",
-        "seatNo": "03",
-        "name": "余賽亞",
-        "studentId": "310273"
-      },
-      {
-        "no": 2,
-        "className": "301",
-        "seatNo": "04",
-        "name": "吳宇昕",
-        "studentId": "310274"
-      },
-      {
-        "no": 3,
-        "className": "301",
-        "seatNo": "09",
-        "name": "林子辰",
-        "studentId": "310014"
-      },
-      {
-        "no": 4,
-        "className": "301",
-        "seatNo": "10",
-        "name": "鍾黃保",
-        "studentId": "310303"
-      },
-      {
-        "no": 5,
-        "className": "301",
-        "seatNo": "20",
-        "name": "馮靖翔",
-        "studentId": "310259"
-      },
-      {
-        "no": 6,
-        "className": "301",
-        "seatNo": "26",
-        "name": "鄧智城",
-        "studentId": "310100"
-      },
-      {
-        "no": 7,
-        "className": "302",
-        "seatNo": "02",
-        "name": "吳沁祐",
-        "studentId": "310275"
-      },
-      {
-        "no": 8,
-        "className": "302",
-        "seatNo": "05",
-        "name": "李孟蒝",
-        "studentId": "310175"
-      },
-      {
-        "no": 9,
-        "className": "302",
-        "seatNo": "06",
-        "name": "林辰恩",
-        "studentId": "310017"
-      },
-      {
-        "no": 10,
-        "className": "302",
-        "seatNo": "08",
-        "name": "林秉翰",
-        "studentId": "310113"
-      },
-      {
-        "no": 11,
-        "className": "302",
-        "seatNo": "16",
-        "name": "郭紘銘",
-        "studentId": "310091"
-      },
-      {
-        "no": 12,
-        "className": "302",
-        "seatNo": "17",
-        "name": "陳宇傑",
-        "studentId": "310151"
-      },
-      {
-        "no": 13,
-        "className": "303",
-        "seatNo": "06",
-        "name": "李翊勤",
-        "studentId": "310109"
-      },
-      {
-        "no": 14,
-        "className": "303",
-        "seatNo": "07",
-        "name": "卓子皓",
-        "studentId": "310110"
-      },
-      {
-        "no": 15,
-        "className": "303",
-        "seatNo": "15",
-        "name": "莊英濠",
-        "studentId": "310185"
-      },
-      {
-        "no": 16,
-        "className": "303",
-        "seatNo": "24",
-        "name": "楊晉承",
-        "studentId": "310231"
-      },
-      {
-        "no": 17,
-        "className": "304",
-        "seatNo": "08",
-        "name": "林兆銓",
-        "studentId": "310179"
-      },
-      {
-        "no": 18,
-        "className": "304",
-        "seatNo": "14",
-        "name": "洪睿遠",
-        "studentId": "310281"
-      },
-      {
-        "no": 19,
-        "className": "304",
-        "seatNo": "15",
-        "name": "孫大鈞",
-        "studentId": "310022"
-      },
-      {
-        "no": 20,
-        "className": "304",
-        "seatNo": "17",
-        "name": "馬翌友",
-        "studentId": "310250"
-      },
-      {
-        "no": 21,
-        "className": "304",
-        "seatNo": "21",
-        "name": "盛羨",
-        "studentId": "310223"
-      },
-      {
-        "no": 22,
-        "className": "304",
-        "seatNo": "27",
-        "name": "黃國威",
-        "studentId": "310292"
-      },
-      {
-        "no": 23,
-        "className": "304",
-        "seatNo": "29",
-        "name": "潘韋廷",
-        "studentId": "310197"
-      },
-      {
-        "no": 24,
-        "className": "305",
-        "seatNo": "25",
-        "name": "楊宗諺",
-        "studentId": "310264"
-      },
-      {
-        "no": 25,
-        "className": "306",
-        "seatNo": "08",
-        "name": "李家翔",
-        "studentId": "310040"
-      },
-      {
-        "no": 26,
-        "className": "306",
-        "seatNo": "23",
-        "name": "陳莨裕",
-        "studentId": "310026"
-      },
-      {
-        "no": 27,
-        "className": "306",
-        "seatNo": "29",
-        "name": "鄧名劭",
-        "studentId": "310065"
-      },
-      {
-        "no": 28,
-        "className": "307",
-        "seatNo": "18",
-        "name": "張朔源",
-        "studentId": "310088"
-      },
-      {
-        "no": 29,
-        "className": "307",
-        "seatNo": "31",
-        "name": "蔡秉睿",
-        "studentId": "310199"
-      },
-      {
-        "no": 30,
-        "className": "307",
-        "seatNo": "33",
-        "name": "賴冠叡",
-        "studentId": "310133"
-      },
-      {
-        "no": 31,
-        "className": "308",
-        "seatNo": "27",
-        "name": "黃柏睿",
-        "studentId": "310228"
-      },
-      {
-        "no": 32,
-        "className": "ERROR:#N/A",
-        "seatNo": "21",
-        "name": "薛宇廷",
-        "studentId": "010070"
-      }
-    ]
-  },
-  "github": {
-    "owner": "dfleoyang-HLHS",
-    "repo": "2026113",
-    "branch": "main"
-  }
-}
+彈性班級座位表（含 GitHub 上傳）
+功能
+•	拖曳調整座位（電腦滑鼠 / 手機長按）
+•	本地儲存座位配置
+•	上傳至 GitHub（repository:  2026113 , branch:  main ）
+•	下載 Excel 座位表
+•	列印 / 另存 PDF
+•	重新設定教室排數與人數
+學生資料
+使用您提供的簽到表，包含以下四個欄位：
+•	班級
+•	座號
+•	姓名
+•	學號（原序號欄位）
+共 32 位學生。
+使用方式
+1.	用瀏覽器開啟  index.html （可直接雙擊檔案或透過 GitHub Pages）。
+2.	按「重新設定教室」設定排數與人數。
+3.	拖曳調整座位。
+4.	按「上傳最新版本到 GitHub」：
+•	第一次會要求輸入 Personal Access Token（需 repo 權限）
+•	產生 token：https://github.com/settings/tokens
+•	勾選 repo 權限
+5.	上傳成功後，座位資料會儲存在 repository 中的  seating-113 班.json 。
+6.	下次開啟網頁時，會自動從 GitHub 載入最新版本。
+檔案
+•	 index.html ：座位表網頁
+•	 config.json ：班級與學生名單設定
+•	 README.md ：說明
