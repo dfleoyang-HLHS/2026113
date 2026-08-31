@@ -1,225 +1,233 @@
 {
   "class": {
-    "name": "113 班",
+    "name": "113班",
     "rows": 6,
     "cols": 6,
-    "total": 36,
+    "total": 32,
     "students": [
       {
         "no": 1,
-        "name": "林奕辰",
-        "gender": "男",
-        "style": "溫潤儒雅"
+        "className": "301",
+        "seatNo": "03",
+        "name": "余賽亞",
+        "studentId": "310273"
       },
       {
         "no": 2,
-        "name": "王沐宸",
-        "gender": "男",
-        "style": "溫潤儒雅"
+        "className": "301",
+        "seatNo": "04",
+        "name": "吳宇昕",
+        "studentId": "310274"
       },
       {
         "no": 3,
-        "name": "蔡書瑤",
-        "gender": "男",
-        "style": "溫潤儒雅"
+        "className": "301",
+        "seatNo": "09",
+        "name": "林子辰",
+        "studentId": "310014"
       },
       {
         "no": 4,
-        "name": "蔡宇軒",
-        "gender": "男",
-        "style": "溫潤儒雅"
+        "className": "301",
+        "seatNo": "10",
+        "name": "鍾黃保",
+        "studentId": "310303"
       },
       {
         "no": 5,
-        "name": "林彥博",
-        "gender": "男",
-        "style": "溫潤儒雅"
+        "className": "301",
+        "seatNo": "20",
+        "name": "馮靖翔",
+        "studentId": "310259"
       },
       {
         "no": 6,
-        "name": "張錦程",
-        "gender": "男",
-        "style": "沉穩大氣"
+        "className": "301",
+        "seatNo": "26",
+        "name": "鄧智城",
+        "studentId": "310100"
       },
       {
         "no": 7,
-        "name": "楊銘澤",
-        "gender": "男",
-        "style": "沉穩大氣"
+        "className": "302",
+        "seatNo": "02",
+        "name": "吳沁祐",
+        "studentId": "310275"
       },
       {
         "no": 8,
-        "name": "楊浩宇",
-        "gender": "男",
-        "style": "沉穩大氣"
+        "className": "302",
+        "seatNo": "05",
+        "name": "李孟蒝",
+        "studentId": "310175"
       },
       {
         "no": 9,
-        "name": "蔡柏霖",
-        "gender": "男",
-        "style": "沉穩大氣"
+        "className": "302",
+        "seatNo": "06",
+        "name": "林辰恩",
+        "studentId": "310017"
       },
       {
         "no": 10,
-        "name": "吳承睿",
-        "gender": "男",
-        "style": "沉穩大氣"
+        "className": "302",
+        "seatNo": "08",
+        "name": "林秉翰",
+        "studentId": "310113"
       },
       {
         "no": 11,
-        "name": "楊沐陽",
-        "gender": "男",
-        "style": "陽光活力"
+        "className": "302",
+        "seatNo": "16",
+        "name": "郭紘銘",
+        "studentId": "310091"
       },
       {
         "no": 12,
-        "name": "蔡子騫",
-        "gender": "男",
-        "style": "陽光活力"
+        "className": "302",
+        "seatNo": "17",
+        "name": "陳宇傑",
+        "studentId": "310151"
       },
       {
         "no": 13,
-        "name": "劉致遠",
-        "gender": "男",
-        "style": "陽光活力"
+        "className": "303",
+        "seatNo": "06",
+        "name": "李翊勤",
+        "studentId": "310109"
       },
       {
         "no": 14,
-        "name": "楊思源",
-        "gender": "男",
-        "style": "陽光活力"
+        "className": "303",
+        "seatNo": "07",
+        "name": "卓子皓",
+        "studentId": "310110"
       },
       {
         "no": 15,
-        "name": "劉竣宇",
-        "gender": "男",
-        "style": "陽光活力"
+        "className": "303",
+        "seatNo": "15",
+        "name": "莊英濠",
+        "studentId": "310185"
       },
       {
         "no": 16,
-        "name": "張梓豪",
-        "gender": "男",
-        "style": "自然清新"
+        "className": "303",
+        "seatNo": "24",
+        "name": "楊晉承",
+        "studentId": "310231"
       },
       {
         "no": 17,
-        "name": "陳若霖",
-        "gender": "男",
-        "style": "自然清新"
+        "className": "304",
+        "seatNo": "08",
+        "name": "林兆銓",
+        "studentId": "310179"
       },
       {
         "no": 18,
-        "name": "楊昕磊",
-        "gender": "男",
-        "style": "自然清新"
+        "className": "304",
+        "seatNo": "14",
+        "name": "洪睿遠",
+        "studentId": "310281"
       },
       {
         "no": 19,
-        "name": "李雨桐",
-        "gender": "女",
-        "style": "溫婉靈動"
+        "className": "304",
+        "seatNo": "15",
+        "name": "孫大鈞",
+        "studentId": "310022"
       },
       {
         "no": 20,
-        "name": "林錦汐",
-        "gender": "女",
-        "style": "溫婉靈動"
+        "className": "304",
+        "seatNo": "17",
+        "name": "馬翌友",
+        "studentId": "310250"
       },
       {
         "no": 21,
-        "name": "劉沐瑤",
-        "gender": "女",
-        "style": "溫婉靈動"
+        "className": "304",
+        "seatNo": "21",
+        "name": "盛羨",
+        "studentId": "310223"
       },
       {
         "no": 22,
-        "name": "陳汐玥",
-        "gender": "女",
-        "style": "溫婉靈動"
+        "className": "304",
+        "seatNo": "27",
+        "name": "黃國威",
+        "studentId": "310292"
       },
       {
         "no": 23,
-        "name": "劉羽菲",
-        "gender": "女",
-        "style": "溫婉靈動"
+        "className": "304",
+        "seatNo": "29",
+        "name": "潘韋廷",
+        "studentId": "310197"
       },
       {
         "no": 24,
-        "name": "王芷晴",
-        "gender": "女",
-        "style": "知性優雅"
+        "className": "305",
+        "seatNo": "25",
+        "name": "楊宗諺",
+        "studentId": "310264"
       },
       {
         "no": 25,
-        "name": "張若妤",
-        "gender": "女",
-        "style": "知性優雅"
+        "className": "306",
+        "seatNo": "08",
+        "name": "李家翔",
+        "studentId": "310040"
       },
       {
         "no": 26,
-        "name": "吳絜予",
-        "gender": "女",
-        "style": "知性優雅"
+        "className": "306",
+        "seatNo": "23",
+        "name": "陳莨裕",
+        "studentId": "310026"
       },
       {
         "no": 27,
-        "name": "李昕妤",
-        "gender": "女",
-        "style": "知性優雅"
+        "className": "306",
+        "seatNo": "29",
+        "name": "鄧名劭",
+        "studentId": "310065"
       },
       {
         "no": 28,
-        "name": "王曼吟",
-        "gender": "女",
-        "style": "知性優雅"
+        "className": "307",
+        "seatNo": "18",
+        "name": "張朔源",
+        "studentId": "310088"
       },
       {
         "no": 29,
-        "name": "王玥霖",
-        "gender": "女",
-        "style": "璀璨耀眼"
+        "className": "307",
+        "seatNo": "31",
+        "name": "蔡秉睿",
+        "studentId": "310199"
       },
       {
         "no": 30,
-        "name": "吳芊妤",
-        "gender": "女",
-        "style": "璀璨耀眼"
+        "className": "307",
+        "seatNo": "33",
+        "name": "賴冠叡",
+        "studentId": "310133"
       },
       {
         "no": 31,
-        "name": "蔡芯怡",
-        "gender": "女",
-        "style": "璀璨耀眼"
+        "className": "308",
+        "seatNo": "27",
+        "name": "黃柏睿",
+        "studentId": "310228"
       },
       {
         "no": 32,
-        "name": "林瑾萱",
-        "gender": "女",
-        "style": "璀璨耀眼"
-      },
-      {
-        "no": 33,
-        "name": "王語柔",
-        "gender": "女",
-        "style": "璀璨耀眼"
-      },
-      {
-        "no": 34,
-        "name": "林宛凝",
-        "gender": "女",
-        "style": "恬靜淡雅"
-      },
-      {
-        "no": 35,
-        "name": "蔡依諾",
-        "gender": "女",
-        "style": "恬靜淡雅"
-      },
-      {
-        "no": 36,
-        "name": "蔡采薇",
-        "gender": "女",
-        "style": "恬靜淡雅"
+        "className": "ERROR:#N/A",
+        "seatNo": "21",
+        "name": "薛宇廷",
+        "studentId": "010070"
       }
     ]
   },
