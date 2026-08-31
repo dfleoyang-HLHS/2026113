@@ -29,7 +29,9 @@ button.danger{background:#fee2e2;color:#991b1b}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 5px;color:var(--muted);font-size:13px}
 .legend span{padding:5px 9px;border-radius:999px;background:#eef2ff}
 @media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
-</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="config" title="修改 GitHub 設定">設定</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>電腦：滑鼠拖放</span><span>手機：長按後拖曳</span><span>男生：淺藍色｜女生：淺粉紅色</span></div></section></main>
+@media print{.toolbar,.legend,header p{display:none}body{background:white}main{width:100%}.room{box-shadow:none;border:none}}
+</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="export">下載 Excel 座位表</button><button id="print">列印 / 存 PDF</button><button id="config" title="修改 GitHub 設定">設定</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>電腦：滑鼠拖放</span><span>手機：長按後拖曳</span><span>男生：淺藍色｜女生：淺粉紅色</span></div></section></main>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 const students=[{"no": 1, "name": "林奕辰", "gender": "男", "style": "溫潤儒雅"}, {"no": 2, "name": "王沐宸", "gender": "男", "style": "溫潤儒雅"}, {"no": 3, "name": "蔡書瑤", "gender": "男", "style": "溫潤儒雅"}, {"no": 4, "name": "蔡宇軒", "gender": "男", "style": "溫潤儒雅"}, {"no": 5, "name": "林彥博", "gender": "男", "style": "溫潤儒雅"}, {"no": 6, "name": "張錦程", "gender": "男", "style": "沉穩大氣"}, {"no": 7, "name": "楊銘澤", "gender": "男", "style": "沉穩大氣"}, {"no": 8, "name": "楊浩宇", "gender": "男", "style": "沉穩大氣"}, {"no": 9, "name": "蔡柏霖", "gender": "男", "style": "沉穩大氣"}, {"no": 10, "name": "吳承睿", "gender": "男", "style": "沉穩大氣"}, {"no": 11, "name": "楊沐陽", "gender": "男", "style": "陽光活力"}, {"no": 12, "name": "蔡子騫", "gender": "男", "style": "陽光活力"}, {"no": 13, "name": "劉致遠", "gender": "男", "style": "陽光活力"}, {"no": 14, "name": "楊思源", "gender": "男", "style": "陽光活力"}, {"no": 15, "name": "劉竣宇", "gender": "男", "style": "陽光活力"}, {"no": 16, "name": "張梓豪", "gender": "男", "style": "自然清新"}, {"no": 17, "name": "陳若霖", "gender": "男", "style": "自然清新"}, {"no": 18, "name": "楊昕磊", "gender": "男", "style": "自然清新"}, {"no": 19, "name": "李雨桐", "gender": "女", "style": "溫婉靈動"}, {"no": 20, "name": "林錦汐", "gender": "女", "style": "溫婉靈動"}, {"no": 21, "name": "劉沐瑤", "gender": "女", "style": "溫婉靈動"}, {"no": 22, "name": "陳汐玥", "gender": "女", "style": "溫婉靈動"}, {"no": 23, "name": "劉羽菲", "gender": "女", "style": "溫婉靈動"}, {"no": 24, "name": "王芷晴", "gender": "女", "style": "知性優雅"}, {"no": 25, "name": "張若妤", "gender": "女", "style": "知性優雅"}, {"no": 26, "name": "吳絜予", "gender": "女", "style": "知性優雅"}, {"no": 27, "name": "李昕妤", "gender": "女", "style": "知性優雅"}, {"no": 28, "name": "王曼吟", "gender": "女", "style": "知性優雅"}, {"no": 29, "name": "王玥霖", "gender": "女", "style": "璀璨耀眼"}, {"no": 30, "name": "吳芊妤", "gender": "女", "style": "璀璨耀眼"}, {"no": 31, "name": "蔡芯怡", "gender": "女", "style": "璀璨耀眼"}, {"no": 32, "name": "林瑾萱", "gender": "女", "style": "璀璨耀眼"}, {"no": 33, "name": "王語柔", "gender": "女", "style": "璀璨耀眼"}, {"no": 34, "name": "林宛凝", "gender": "女", "style": "恬靜淡雅"}, {"no": 35, "name": "蔡依諾", "gender": "女", "style": "恬靜淡雅"}, {"no": 36, "name": "蔡采薇", "gender": "女", "style": "恬靜淡雅"}];
 const LOCAL_KEY='class113-seating-v1';
@@ -208,6 +210,44 @@ document.querySelector('#push').onclick=async()=>{
     status.className='status error';
     alert('上傳失敗，詳細錯誤請查看瀏覽器開發者工具（F12）的 Console。\n\n錯誤訊息：'+err.message);
   }
+};
+
+document.querySelector('#export').onclick=()=>{
+  if(typeof XLSX==='undefined'){
+    alert('Excel 匯出工具尚未載入。請確認網路連線後重新整理網頁，再試一次。');
+    return;
+  }
+  const today=new Date();
+  const stamp=`${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+  const seatRows=[['113 班座位表'],['', '第 1 列','第 2 列','第 3 列','第 4 列','第 5 列','第 6 列']];
+  for(let r=0;r<6;r++){
+    const row=[`第 ${r+1} 排`];
+    for(let c=0;c<6;c++){
+      const s=students.find(x=>x.no===order[r*6+c]);
+      row.push(s?`${s.no}號 ${s.name}（${s.gender}）`:'空位');
+    }
+    seatRows.push(row);
+  }
+  const detailRows=[['位置','座號','姓名','性別','風格']];
+  order.forEach((no,i)=>{
+    const s=students.find(x=>x.no===no);
+    detailRows.push([`第 ${Math.floor(i/6)+1} 排，第 ${i%6+1} 列`,s?.no||'',s?.name||'',s?.gender||'',s?.style||'']);
+  });
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(seatRows);
+  ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:6}}];
+  ws['!cols']=[{wch:12},...Array(6).fill({wch:22})];
+  XLSX.utils.book_append_sheet(wb,ws,'座位表');
+  const wd=XLSX.utils.aoa_to_sheet(detailRows);
+  wd['!cols']=[{wch:18},{wch:10},{wch:14},{wch:10},{wch:16}];
+  XLSX.utils.book_append_sheet(wb,wd,'學生明細');
+  XLSX.writeFile(wb,`113 班座位表_${stamp}.xlsx`);
+  status.textContent='已下載 Excel 座位表';
+};
+
+document.querySelector('#print').onclick=()=>{
+  window.print();
+  status.textContent='請在列印視窗中選擇「另存為 PDF」或「儲存為圖片」';
 };
 
 document.querySelector('#reset').onclick=()=>{if(confirm('恢復由 1 號至 36 號的預設排列？')){order=students.map(s=>s.no);render();status.textContent='已恢復預設，尚未儲存'}};
