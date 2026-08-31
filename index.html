@@ -8,186 +8,165 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    *{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:#172033;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
-    header{padding:24px 20px 18px;text-align:center;background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff}
-    header h1{margin:0 0 6px;font-size:clamp(24px,4vw,32px)}header p{margin:0;opacity:.9}
-    .container{max-width:1400px;margin:20px auto;padding:0 16px}
-    .panel{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 8px 30px #1e3a8a0d}
-    h2{margin:0 0 12px;font-size:1.1rem}
-    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    :root{--bg:#f6f8fc;--card:#fff;--ink:#172033;--muted:#64748b;--accent:#2563eb;--line:#dbe3ef}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+    header{padding:28px 20px 18px;text-align:center;background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff}
+    h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}header p{margin:0;color:rgba(255,255,255,.9)}
+    main{width:min(1180px,94vw);margin:auto}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:8px 0 18px}
+    button{border:0;border-radius:10px;padding:10px 15px;font-size:15px;cursor:pointer;background:#e8eef8;color:var(--ink)}
+    button.primary{background:var(--accent);color:white}
+    .status{color:var(--muted);font-size:14px;text-align:center;margin:10px 0}
+    .room{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(12px,3vw,26px);box-shadow:0 8px 30px #1e3a8a0d}
+    .front{margin:0 auto 18px;text-align:center;background:#172033;color:white;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}
+    .grid{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));gap:10px}
+    .seat{min-height:102px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}
+    .seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}
+    .seat.dragging{opacity:.35}
+    .seat.over{border-color:var(--accent);background:#eff6ff;transform:scale(1.02)}
+    .num{font-size:12px;color:var(--muted)}
+    .name{font-size:18px;font-weight:800;margin:7px 0 5px}
+    .meta{font-size:12px;color:var(--muted)}
+    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
     label{display:block;font-weight:700;font-size:.85rem;margin-bottom:4px}
     input,select{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}
-    button{border:0;border-radius:10px;padding:10px 15px;cursor:pointer;font-weight:700;background:#e8eef8;color:#172033;margin:4px 4px 0 0}
-    button:hover{filter:brightness(.95)}
-    .blue{background:#2563eb;color:#fff}.green{background:#059669;color:#fff}.orange{background:#ea580c;color:#fff}.purple{background:#7c3aed;color:#fff}.slate{background:#475569;color:#fff}
-    .hint{font-size:.85rem;color:#64748b;margin-top:8px}
-    .layout{display:grid;grid-template-columns:300px 1fr;gap:16px}
-    .student-list{max-height:600px;overflow:auto;border:1px solid #cbd5e1;border-radius:10px;padding:8px;background:#f8fafc}
-    .student{background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:9px;margin-bottom:7px;cursor:grab;user-select:none}
-    .student:active{cursor:grabbing}.student.dragging{opacity:.35}.student.assigned{opacity:.5;background:#e2e8f0}
-    .classroom{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:20px;box-shadow:0 8px 30px #1e3a8a0d}
-    .front{margin:0 auto 18px;text-align:center;background:#172033;color:#fff;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}
-    .seat-grid{display:grid;gap:10px}
-    .seat{min-height:92px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}
-    .seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}
-    .seat.dragging{opacity:.35}.seat.over{border-color:#2563eb;background:#eff6ff;transform:scale(1.02)}
-    .seat-number{font-size:12px;color:#64748b}
-    .student-card{font-size:.85rem;cursor:grab;padding:7px;width:100%;border-radius:6px;background:#eff6ff;border:1px solid #93c5fd}
-    .student-card:active{cursor:grabbing}.student-card.dragging{opacity:.3}
-    .student-card strong{display:block;font-size:16px;font-weight:800;margin:5px 0 3px}
-    .remove{position:absolute;right:6px;top:4px;border:0;background:transparent;color:#dc2626;padding:0 4px;font-size:1.1rem;cursor:pointer}
-    .drop-msg{margin:0 0 10px;padding:9px;border-radius:8px;background:#eff6ff;color:#1d4ed8;font-size:.85rem}
-    .stats{display:flex;gap:12px;font-weight:700;margin-bottom:8px;color:#64748b}
-    .status{margin-top:10px;padding:10px;border-radius:8px;font-size:.85rem}
-    .status.success{background:#dcfce7;color:#166534}.status.error{background:#fee2e2;color:#991b1b}.status.info{background:#dbeafe;color:#1e40af}
-    @media(max-width:900px){.layout{grid-template-columns:1fr}.student-list{max-height:250px}}
-    @media print{header,.controls,.github-section,.student-panel,.hint,.drop-msg{display:none!important}.container{margin:0}.panel{box-shadow:none;border:1px solid #000}.classroom{border:1px solid #000;box-shadow:none}}
+    @media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
+    @media print{header,.toolbar,.controls,.status{display:none!important}.room{border:1px solid #000;box-shadow:none}}
   </style>
 </head>
 <body>
 <header><h1>教室座位表產生器</h1><p>Classroom Seating Chart Generator</p></header>
-<main class="container">
-  <section class="panel">
-    <div class="controls">
-      <div><label>上傳點名表</label><input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></div>
-      <div><label>每排座位數</label><select id="cols"><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
-      <div><label>排列方式</label><select id="order"><option value="row">由前到後</option><option value="column">由左到右</option><option value="number">依座號</option></select></div>
-      <div><label>標題</label><input id="title" value="教室座位表"></div>
-    </div>
-    <div style="margin-top:10px">
-      <button class="blue" id="autoBtn">自動填滿</button>
-      <button class="slate" id="clearBtn">清除</button>
-      <button class="green" id="excelBtn">Excel</button>
-      <button class="orange" id="pdfBtn">PDF</button>
-    </div>
-    <p class="hint">拖放：座位間拖曳＝交換；名單→座位＝入座；座位→名單＝取消</p>
-  </section>
-
-  <section class="panel github-section">
-    <h2>GitHub</h2>
-    <div style="margin-bottom:8px">
-      <button class="green" id="saveLocalBtn">💾 本機</button>
-      <button class="blue" id="loadLocalBtn">📂 載入</button>
-      <button class="purple" id="uploadBtn">📤 上傳</button>
-      <button class="blue" id="loadGithubBtn">📥 下載</button>
-      <button class="slate" id="jsonBtn">JSON</button>
-      <button class="slate" id="clearTokenBtn">清除 Token</button>
-    </div>
-    <div class="controls">
-      <div><label>使用者</label><input id="ghUser" value="dfleoyang-HLHS"></div>
-      <div><label>儲存庫</label><input id="ghRepo" value="2026113"></div>
-      <div><label>Token</label><input id="ghToken" type="password" placeholder="ghp_..."></div>
-      <div><label>分支</label><input id="ghBranch" value="main"></div>
-      <div><label>路徑</label><input id="ghPath" value="seating_data.json"></div>
-    </div>
-    <div id="ghStatus" class="status" style="display:none"></div>
-  </section>
-
-  <div class="layout">
-    <section class="panel student-panel">
-      <h2>學生名單</h2>
-      <div class="stats"><span id="total">0 人</span><span id="assigned">0 入座</span></div>
-      <div class="drop-msg">拖學生到這裡取消入座</div>
-      <div id="studentList" class="student-list"></div>
-    </section>
-    <section class="panel">
-      <h2 id="chartTitle">教室座位表</h2>
-      <div class="classroom">
-        <div class="front">講台</div>
-        <div id="seatGrid" class="seat-grid"></div>
-      </div>
-    </section>
+<main>
+  <div class="controls">
+    <div><label>上傳點名表</label><input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></div>
+    <div><label>每排座位數</label><select id="cols"><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
+    <div><label>排列方式</label><select id="order"><option value="row">由前到後</option><option value="column">由左到右</option><option value="number">依座號</option></select></div>
+    <div><label>標題</label><input id="title" value="教室座位表"></div>
   </div>
+
+  <div class="toolbar">
+    <button class="primary" onclick="autoFill()">自動填滿</button>
+    <button onclick="clearSeats()">清除</button>
+    <button class="primary" onclick="downloadExcel()">Excel</button>
+    <button class="primary" onclick="downloadPDF()">PDF</button>
+    <button class="primary" onclick="saveLocal()">儲存本機</button>
+    <button onclick="loadLocal()">從本機載入</button>
+  </div>
+
+  <div class="room">
+    <div class="front" id="frontTitle">講台</div>
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <div class="status" id="status">操作：以滑鼠拖放座位即可交換</div>
 </main>
 <script>
-var students=[],seats=[],cols=6,dragged=null;
-function $(id){return document.getElementById(id);}
-function esc(v){return String(v||'').replace(/[&<>'"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])})}
-function showStatus(type,msg){var el=$('ghStatus');el.style.display='block';el.className='status '+type;el.textContent=msg}
-function updateStats(){$('total').textContent=students.length+' 人';$('assigned').textContent=students.filter(function(s){return s.seat!==null}).length+' 入座'}
+const students=[];
+let order=[],cols=6,dragged=null;
+const $=id=>document.getElementById(id);
+
+function load(){try{let x=JSON.parse(localStorage.getItem('seating-v1'));return Array.isArray(x)?x:null}catch(e){return null}}
 
 function render(){
-  var list=$('studentList');
-  list.innerHTML='';
-  students.forEach(function(s){
-    var d=document.createElement('div');
-    d.className='student'+(s.seat!==null?' assigned':'');
-    d.draggable=!!s.seat;
-    d.innerHTML='<strong>'+esc(s.name)+'</strong><small>班級 '+esc(s.className)+'｜座號 '+esc(s.number)+'</small>';
-    if(s.seat!==null){
-      d.ondragstart=function(e){dragged=s.seat;d.classList.add('dragging');e.dataTransfer.effectAllowed='move'};
-      d.ondragend=function(){dragged=null;d.classList.remove('dragging')}
-    }
-    list.appendChild(d)
-  });
-  updateStats();
-  
-  var grid=$('seatGrid');
+  const grid=$('grid');
   grid.innerHTML='';
-  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  grid.style.gridTemplateColumns='repeat('+cols+',minmax(90px,1fr))';
   
-  for(var i=0;i<seats.length;i++){
-    var id=seats[i],s=id&&students.find(function(x){return x.id===id});
-    var seat=document.createElement('div');
-    seat.className='seat'+(s?'':' empty');
-    seat.dataset.index=i;
-    seat.innerHTML='<span class="seat-number">'+(i+1)+'</span>'+(s?'<div class="student-card"><button class="remove">x</button><strong>'+esc(s.name)+'</strong><span>'+esc(s.className)+' '+esc(s.number)+'</span><br><small>'+esc(s.id)+'</small></div>':'空位');
+  order.forEach((no,i)=>{
+    const s=no!==null?students.find(x=>x.no===no):null;
+    const el=document.createElement('div');
+    el.className='seat'+(s?'':' empty');
+    el.draggable=!!s;
+    el.dataset.index=i;
+    el.innerHTML=s?`<span class="num">座號 ${s.no}</span><div class="name">${esc(s.name)}</div><div class="meta">${esc(s.className)}｜${esc(s.id)}</div>`:`<span class="num">空位</span>`;
     
     if(s){
-      seat.draggable=true;
-      seat.ondragstart=function(e){dragged=i;seat.classList.add('dragging');e.dataTransfer.effectAllowed='move'};
-      seat.ondragend=function(){dragged=null;seat.classList.remove('dragging');document.querySelectorAll('.over').forEach(function(x){x.classList.remove('over')})};
-      var card=seat.querySelector('.student-card');
-      card.ondragstart=function(e){e.stopPropagation();dragged=i;card.classList.add('dragging')};
-      card.ondragend=function(){card.classList.remove('dragging')};
-      seat.querySelector('.remove').onclick=function(e){e.stopPropagation();remove(i)}
+      el.addEventListener('dragstart',()=>{dragged=i;el.classList.add('dragging')});
+      el.addEventListener('dragend',()=>{dragged=null;el.classList.remove('dragging');document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))})
     }
     
-    seat.ondragover=function(e){e.preventDefault();seat.classList.add('over')};
-    seat.ondragleave=function(){seat.classList.remove('over')};
-    seat.ondrop=function(e){e.preventDefault();seat.classList.remove('over');if(dragged!==null&&dragged!==i){swap(dragged,i)}};
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});
+    el.addEventListener('dragleave',()=>el.classList.remove('over'));
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');if(dragged!==null&&dragged!==i){[order[dragged],order[i]]=[order[i],order[dragged]];render();$('status').textContent='已調整座位'}});
     
-    grid.appendChild(seat)
-  }
+    grid.appendChild(el)
+  })
 }
 
-function createGrid(){cols=Number($('cols').value);var rows=Math.ceil(students.length/cols);seats=Array(rows*cols).fill(null);students.forEach(function(s){s.seat=null});render()}
-function remove(i){var id=seats[i],s=students.find(function(x){return x.id===id});if(s)s.seat=null;seats[i]=null;render()}
-function swap(source,target){
-  var sourceId=seats[source],targetId=seats[target];
-  if(sourceId&&targetId){
-    var s1=students.find(function(x){return x.id===sourceId}),s2=students.find(function(x){return x.id===targetId});
-    seats[source]=targetId;seats[target]=sourceId;
-    s1.seat=target;s2.seat=source
-  }else if(sourceId&&!targetId){
-    var s1=students.find(function(x){return x.id===sourceId});
-    seats[target]=sourceId;seats[source]=null;
-    s1.seat=target
-  }else if(!sourceId&&targetId){
-    var s2=students.find(function(x){return x.id===targetId});
-    seats[source]=targetId;seats[target]=null;
-    s2.seat=source
-  }
-  render()
+function esc(v){return String(v||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+function autoFill(){
+  order=[];
+  const list=[...students];
+  if($('order').value==='number')list.sort((a,b)=>(a.className+'-'+a.number).localeCompare(b.className+'-'+b.number));
+  const total=cols*Math.ceil(list.length/cols);
+  for(let i=0;i<total;i++){order.push(i<list.length?list[i].no:null)}
+  render();
+  $('status').textContent='已自動排列'
 }
-function autoFill(){students.forEach(function(s){s.seat=null});seats.fill(null);var list=[...students];if($('order').value==='number')list.sort(function(a,b){return (a.className+'-'+a.number).localeCompare(b.className+'-'+b.number)});list.forEach(function(s,i){if(i<seats.length){seats[i]=s.id;s.seat=i}});render()}
 
-$('studentList').ondragover=function(e){e.preventDefault();$('studentList').style.background='#dbeafe'};
-$('studentList').ondragleave=function(){$('studentList').style.background='#f8fafc'};
-$('studentList').ondrop=function(e){e.preventDefault();$('studentList').style.background='#f8fafc';if(dragged!==null)remove(dragged)};
+function clearSeats(){
+  order=[];
+  const total=cols*Math.ceil(students.length/cols);
+  for(let i=0;i<total;i++){order.push(null)}
+  render();
+  $('status').textContent='已清除'
+}
 
-$('fileInput').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});var hi=-1;for(var i=0;i<Math.min(rows.length,5);i++){if(rows[i].some(function(v){return String(v).includes('學號')})){hi=i;break}}if(hi<0)throw new Error('找不到學號');var h=rows[hi].map(function(v){return String(v).trim().toLowerCase()});var ix={id:h.findIndex(function(v){return v.includes('學號')}),cls:h.findIndex(function(v){return v.includes('班級')}),no:h.findIndex(function(v){return v.includes('座號')}),name:h.findIndex(function(v){return v.includes('姓名')})};if(ix.id<0||ix.cls<0||ix.no<0||ix.name<0)throw new Error('缺少欄位');students=rows.slice(hi+1).map(function(r){return{id:String(r[ix.id]||'').trim(),className:String(r[ix.cls]||'').trim(),number:String(r[ix.no]||'').trim(),name:String(r[ix.name]||'').trim(),seat:null}}).filter(function(s){return s.id&&s.name});createGrid();autoFill();showStatus('success','載入 '+students.length+' 人')}catch(err){showStatus('error','失敗：'+err.message)}};r.readAsArrayBuffer(f)};
+$('fileInput').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(ev){
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});
+      let hi=-1;
+      for(let i=0;i<Math.min(rows.length,5);i++){if(rows[i].some(v=>String(v).includes('學號'))){hi=i;break}}
+      if(hi<0)throw new Error('找不到學號欄位');
+      const h=rows[hi].map(v=>String(v).trim().toLowerCase());
+      const ix={id:h.findIndex(v=>v.includes('學號')),cls:h.findIndex(v=>v.includes('班級')),no:h.findIndex(v=>v.includes('座號')),name:h.findIndex(v=>v.includes('姓名'))};
+      if(ix.id<0||ix.cls<0||ix.no<0||ix.name<0)throw new Error('缺少必要欄位');
+      students.length=0;
+      let no=1;
+      rows.slice(hi+1).forEach(function(r){
+        const id=String(r[ix.id]||'').trim(),cls=String(r[ix.cls]||'').trim(),num=String(r[ix.no]||'').trim(),name=String(r[ix.name]||'').trim();
+        if(id&&name)students.push({no:no++,id,className:cls,number:num,name})
+      });
+      cols=Number($('cols').value);
+      autoFill();
+      $('status').textContent='已載入 '+students.length+' 位學生'
+    }catch(err){$('status').textContent='失敗：'+err.message}
+  };
+  r.readAsArrayBuffer(f)
+});
 
-$('cols').onchange=createGrid;$('autoBtn').onclick=autoFill;$('clearBtn').onclick=function(){students.forEach(function(s){s.seat=null});seats.fill(null);render()};$('title').oninput=function(e){$('chartTitle').textContent=e.target.value};
-$('saveLocalBtn').onclick=function(){localStorage.setItem('seating',JSON.stringify({students:students,seats:seats,cols:cols}));showStatus('success','已儲存')};
-$('loadLocalBtn').onclick=function(){var r=localStorage.getItem('seating');if(!r){showStatus('info','無資料');return}var d=JSON.parse(r);students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','已載入')};
-$('uploadBtn').onclick=function(){var c={user:$('ghUser').value.trim(),repo:$('ghRepo').value.trim(),token:$('ghToken').value.trim(),branch:$('ghBranch').value.trim()||'main',path:$('ghPath').value.trim()||'seating_data.json'};if(!c.user||!c.repo||!c.token){showStatus('error','請填 Token');return}if(students.length===0){showStatus('error','無資料');return}showStatus('info','上傳中...');var api='https://api.github.com/repos/'+c.user+'/'+c.repo+'/contents/'+c.path;fetch(api+'?ref='+c.branch,{headers:{Authorization:'Bearer '+c.token}}).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha});else if(r.status!==404)throw new Error('HTTP '+r.status);else return null}).then(function(sha){var body={message:'Update',content:btoa(unescape(encodeURIComponent(JSON.stringify({students:students,seats:seats,cols:cols})))),branch:c.branch};if(sha)body.sha=sha;return fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:JSON.stringify(body)})}).then(function(r){return r.json()}).then(function(){showStatus('success','上傳成功')}).catch(function(e){showStatus('error','失敗：'+e.message)})};
-$('loadGithubBtn').onclick=function(){var c={user:$('ghUser').value.trim(),repo:$('ghRepo').value.trim(),branch:$('ghBranch').value.trim()||'main',path:$('ghPath').value.trim()||'seating_data.json'};if(!c.user||!c.repo){showStatus('error','請填使用者/儲存庫');return}showStatus('info','載入中...');fetch('https://raw.githubusercontent.com/'+c.user+'/'+c.repo+'/'+c.branch+'/'+c.path).then(function(r){if(r.status===404){showStatus('info','無資料');return null}if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(d){students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','已載入 '+students.length+' 人')}}).catch(function(e){showStatus('error','失敗：'+e.message)})};
-$('jsonBtn').onclick=function(){var b=new Blob([JSON.stringify({students:students,seats:seats,cols:cols})],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='seating.json';a.click()};
-$('clearTokenBtn').onclick=function(){$('ghToken').value='';showStatus('success','已清除')};
-$('excelBtn').onclick=function(){var d=seats.map(function(id,i){var s=id&&students.find(function(x){return x.id===id});return{'座位':i+1,'班級':s?s.className:'','座號':s?s.number:'','姓名':s?s.name:'','學號':s?s.id:''}});var ws=XLSX.utils.json_to_sheet(d),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'座位');XLSX.writeFile(wb,'seating.xlsx')};
-$('pdfBtn').onclick=function(){html2canvas($('classroom'),{scale:2}).then(function(canvas){var jsPDF=window.jspdf.jsPDF;var pdf=new jsPDF('landscape','mm','a4');var w=277,h=canvas.height*w/canvas.width;if(h>180){h=180;w=canvas.width*h/canvas.width}pdf.text($('chartTitle').textContent,14,12);pdf.addImage(canvas.toDataURL(),'PNG',14,18,w,h);pdf.save('seating.pdf')})};
-window.onload=function(){var r=localStorage.getItem('seating');if(r){var d=JSON.parse(r);students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','從本機載入 '+students.length+' 人')}};
+$('cols').addEventListener('change',function(){cols=Number($('cols').value);autoFill()});
+$('title').addEventListener('input',function(e){$('frontTitle').textContent=e.target.value||'講台'});
+
+function saveLocal(){localStorage.setItem('seating-v1',JSON.stringify({students,order,cols}));$('status').textContent='已儲存到本機'}
+function loadLocal(){const r=localStorage.getItem('seating-v1');if(!r){$('status').textContent='本機無資料';return}const d=JSON.parse(r);students.length=0;d.students.forEach(s=>students.push(s));order=d.order;cols=d.cols||6;$('cols').value=cols;render();$('status').textContent='已從本機載入 '+students.length+' 人'}
+
+function downloadExcel(){
+  const d=order.map((no,i)=>{const s=no!==null?students.find(x=>x.no===no):null;return{'座位':i+1,'班級':s?s.className:'','座號':s?s.number:'','姓名':s?s.name:'','學號':s?s.id:''}});
+  const ws=XLSX.utils.json_to_sheet(d),wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'座位');
+  XLSX.writeFile(wb,'seating.xlsx')
+}
+
+function downloadPDF(){
+  html2canvas($('.room'),{scale:2}).then(function(canvas){
+    const jsPDF=window.jspdf.jsPDF,pdf=new jsPDF('landscape','mm','a4');
+    let w=277,h=canvas.height*w/canvas.width;
+    if(h>180){h=180;w=canvas.width*h/canvas.width}
+    pdf.text($('title').value,14,12);
+    pdf.addImage(canvas.toDataURL(),'PNG',14,18,w,h);
+    pdf.save('seating.pdf')
+  })
+}
+
+window.onload=function(){
+  const saved=load();
+  if(saved){order=saved;const d=localStorage.getItem('seating-v1');if(d){const data=JSON.parse(d);students.length=0;data.students.forEach(s=>students.push(s));cols=data.cols||6;$('cols').value=cols;render();$('status').textContent='從本機載入 '+students.length+' 人'}}
+};
 </script>
 </body>
 </html>
