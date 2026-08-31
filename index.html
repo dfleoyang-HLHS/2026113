@@ -1,11 +1,130 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>113班座位表</title>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>113 班座位表</title>
 <style>
-:root{--bg:#f6f8fc;--card:#fff;--ink:#172033;--muted:#64748b;--accent:#2563eb;--line:#dbe3ef}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}header{padding:28px 20px 18px;text-align:center}h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}header p{margin:0;color:var(--muted)}main{width:min(1180px,94vw);margin:auto}.toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:8px 0 18px}button{border:0;border-radius:10px;padding:10px 15px;font-size:15px;cursor:pointer;background:#e8eef8;color:var(--ink)}button.primary{background:var(--accent);color:white}button.danger{background:#fee2e2;color:#991b1b}.status{color:var(--muted);font-size:14px}.room{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(12px,3vw,26px);box-shadow:0 8px 30px #1e3a8a0d}.front{margin:0 auto 18px;text-align:center;background:#172033;color:white;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}.grid{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));gap:10px}.seat{min-height:102px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}.seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}.seat.dragging{opacity:.35}.seat.over{border-color:var(--accent);background:#eff6ff;transform:scale(1.02)}.num{font-size:12px;color:var(--muted)}.name{font-size:18px;font-weight:800;margin:7px 0 5px}.meta{font-size:12px;color:var(--muted)}.legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 5px;color:var(--muted);font-size:13px}.legend span{padding:5px 9px;border-radius:999px;background:#eef2ff}@media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
-</style></head><body><header><h1>113班座位表</h1><p>6排 × 6列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除儲存版本</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>操作：以滑鼠拖放</span><span>手機：長按後拖曳</span><span>資料只儲存在本裝置瀏覽器</span></div></section></main>
+:root{--bg:#f6f8fc;--card:#fff;--ink:#172033;--muted:#64748b;--accent:#2563eb;--line:#dbe3ef}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+header{padding:28px 20px 18px;text-align:center}
+h1{margin:0 0 6px;font-size:clamp(24px,4vw,38px)}
+header p{margin:0;color:var(--muted)}
+main{width:min(1180px,94vw);margin:auto}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:8px 0 18px}
+button{border:0;border-radius:10px;padding:10px 15px;font-size:15px;cursor:pointer;background:#e8eef8;color:var(--ink)}
+button.primary{background:var(--accent);color:white}
+button.danger{background:#fee2e2;color:#991b1b}
+.status{color:var(--muted);font-size:14px}
+.room{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(12px,3vw,26px);box-shadow:0 8px 30px #1e3a8a0d}
+.front{margin:0 auto 18px;text-align:center;background:#172033;color:white;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));gap:10px}
+.seat{min-height:102px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}
+.seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}
+.seat.dragging{opacity:.35}
+.seat.over{border-color:var(--accent);background:#eff6ff;transform:scale(1.02)}
+.num{font-size:12px;color:var(--muted)}
+.name{font-size:18px;font-weight:800;margin:7px 0 5px}
+.meta{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 5px;color:var(--muted);font-size:13px}
+.legend span{padding:5px 9px;border-radius:999px;background:#eef2ff}
+@media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
+</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>操作：以滑鼠拖放</span><span>手機：長按後拖曳</span><span>本地資料儲存在瀏覽器</span></div></section></main>
 <script>
-const students=[{"no": 1, "name": "林奕辰", "gender": "男", "style": "溫潤儒雅"}, {"no": 2, "name": "王沐宸", "gender": "男", "style": "溫潤儒雅"}, {"no": 3, "name": "蔡書瑤", "gender": "男", "style": "溫潤儒雅"}, {"no": 4, "name": "蔡宇軒", "gender": "男", "style": "溫潤儒雅"}, {"no": 5, "name": "林彥博", "gender": "男", "style": "溫潤儒雅"}, {"no": 6, "name": "張錦程", "gender": "男", "style": "沉穩大氣"}, {"no": 7, "name": "楊銘澤", "gender": "男", "style": "沉穩大氣"}, {"no": 8, "name": "楊浩宇", "gender": "男", "style": "沉穩大氣"}, {"no": 9, "name": "蔡柏霖", "gender": "男", "style": "沉穩大氣"}, {"no": 10, "name": "吳承睿", "gender": "男", "style": "沉穩大氣"}, {"no": 11, "name": "楊沐陽", "gender": "男", "style": "陽光活力"}, {"no": 12, "name": "蔡子騫", "gender": "男", "style": "陽光活力"}, {"no": 13, "name": "劉致遠", "gender": "男", "style": "陽光活力"}, {"no": 14, "name": "楊思源", "gender": "男", "style": "陽光活力"}, {"no": 15, "name": "劉竣宇", "gender": "男", "style": "陽光活力"}, {"no": 16, "name": "張梓豪", "gender": "男", "style": "自然清新"}, {"no": 17, "name": "陳若霖", "gender": "男", "style": "自然清新"}, {"no": 18, "name": "楊昕磊", "gender": "男", "style": "自然清新"}, {"no": 19, "name": "李雨桐", "gender": "女", "style": "溫婉靈動"}, {"no": 20, "name": "林錦汐", "gender": "女", "style": "溫婉靈動"}, {"no": 21, "name": "劉沐瑤", "gender": "女", "style": "溫婉靈動"}, {"no": 22, "name": "陳汐玥", "gender": "女", "style": "溫婉靈動"}, {"no": 23, "name": "劉羽菲", "gender": "女", "style": "溫婉靈動"}, {"no": 24, "name": "王芷晴", "gender": "女", "style": "知性優雅"}, {"no": 25, "name": "張若妤", "gender": "女", "style": "知性優雅"}, {"no": 26, "name": "吳絜予", "gender": "女", "style": "知性優雅"}, {"no": 27, "name": "李昕妤", "gender": "女", "style": "知性優雅"}, {"no": 28, "name": "王曼吟", "gender": "女", "style": "知性優雅"}, {"no": 29, "name": "王玥霖", "gender": "女", "style": "璀璨耀眼"}, {"no": 30, "name": "吳芊妤", "gender": "女", "style": "璀璨耀眼"}, {"no": 31, "name": "蔡芯怡", "gender": "女", "style": "璀璨耀眼"}, {"no": 32, "name": "林瑾萱", "gender": "女", "style": "璀璨耀眼"}, {"no": 33, "name": "王語柔", "gender": "女", "style": "璀璨耀眼"}, {"no": 34, "name": "林宛凝", "gender": "女", "style": "恬靜淡雅"}, {"no": 35, "name": "蔡依諾", "gender": "女", "style": "恬靜淡雅"}, {"no": 36, "name": "蔡采薇", "gender": "女", "style": "恬靜淡雅"}];const key='class113-seating-v1';let order=load()||students.map(s=>s.no);let dragged=null;const grid=document.querySelector('#grid'),status=document.querySelector('#status');
-function load(){try{let x=JSON.parse(localStorage.getItem(key));return Array.isArray(x)&&x.length===36?x:null}catch(e){return null}}
-function render(){grid.innerHTML='';order.forEach((no,i)=>{let s=students.find(x=>x.no===no),el=document.createElement('div');el.className='seat'+(s?'':' empty');el.draggable=!!s;el.dataset.index=i;el.innerHTML=s?`<div class="num">座號 ${s.no}</div><div class="name">${s.name}</div><div class="meta">${s.gender}・${s.style}</div>`:`<div>空位</div>`;if(s){el.addEventListener('dragstart',()=>{dragged=i;el.classList.add('dragging')});el.addEventListener('dragend',()=>{dragged=null;el.classList.remove('dragging');document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))})}el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});el.addEventListener('dragleave',()=>el.classList.remove('over'));el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');if(dragged!==null&&dragged!==i){[order[dragged],order[i]]=[order[i],order[dragged]];render();status.textContent='已調整，請按「確認並儲存」'}});grid.appendChild(el)})}
-document.querySelector('#save').onclick=()=>{localStorage.setItem(key,JSON.stringify(order));status.textContent='已儲存：下次開啟會自動載入最新版本'};document.querySelector('#reset').onclick=()=>{if(confirm('恢復由1號至36號的預設排列？')){order=students.map(s=>s.no);render();status.textContent='已恢復預設，尚未儲存'}};document.querySelector('#clear').onclick=()=>{if(confirm('清除本裝置的儲存版本並恢復預設？')){localStorage.removeItem(key);order=students.map(s=>s.no);render();status.textContent='已清除儲存版本'}};render();
+const students=[{"no": 1, "name": "林奕辰", "gender": "男", "style": "溫潤儒雅"}, {"no": 2, "name": "王沐宸", "gender": "男", "style": "溫潤儒雅"}, {"no": 3, "name": "蔡書瑤", "gender": "男", "style": "溫潤儒雅"}, {"no": 4, "name": "蔡宇軒", "gender": "男", "style": "溫潤儒雅"}, {"no": 5, "name": "林彥博", "gender": "男", "style": "溫潤儒雅"}, {"no": 6, "name": "張錦程", "gender": "男", "style": "沉穩大氣"}, {"no": 7, "name": "楊銘澤", "gender": "男", "style": "沉穩大氣"}, {"no": 8, "name": "楊浩宇", "gender": "男", "style": "沉穩大氣"}, {"no": 9, "name": "蔡柏霖", "gender": "男", "style": "沉穩大氣"}, {"no": 10, "name": "吳承睿", "gender": "男", "style": "沉穩大氣"}, {"no": 11, "name": "楊沐陽", "gender": "男", "style": "陽光活力"}, {"no": 12, "name": "蔡子騫", "gender": "男", "style": "陽光活力"}, {"no": 13, "name": "劉致遠", "gender": "男", "style": "陽光活力"}, {"no": 14, "name": "楊思源", "gender": "男", "style": "陽光活力"}, {"no": 15, "name": "劉竣宇", "gender": "男", "style": "陽光活力"}, {"no": 16, "name": "張梓豪", "gender": "男", "style": "自然清新"}, {"no": 17, "name": "陳若霖", "gender": "男", "style": "自然清新"}, {"no": 18, "name": "楊昕磊", "gender": "男", "style": "自然清新"}, {"no": 19, "name": "李雨桐", "gender": "女", "style": "溫婉靈動"}, {"no": 20, "name": "林錦汐", "gender": "女", "style": "溫婉靈動"}, {"no": 21, "name": "劉沐瑤", "gender": "女", "style": "溫婉靈動"}, {"no": 22, "name": "陳汐玥", "gender": "女", "style": "溫婉靈動"}, {"no": 23, "name": "劉羽菲", "gender": "女", "style": "溫婉靈動"}, {"no": 24, "name": "王芷晴", "gender": "女", "style": "知性優雅"}, {"no": 25, "name": "張若妤", "gender": "女", "style": "知性優雅"}, {"no": 26, "name": "吳絜予", "gender": "女", "style": "知性優雅"}, {"no": 27, "name": "李昕妤", "gender": "女", "style": "知性優雅"}, {"no": 28, "name": "王曼吟", "gender": "女", "style": "知性優雅"}, {"no": 29, "name": "王玥霖", "gender": "女", "style": "璀璨耀眼"}, {"no": 30, "name": "吳芊妤", "gender": "女", "style": "璀璨耀眼"}, {"no": 31, "name": "蔡芯怡", "gender": "女", "style": "璀璨耀眼"}, {"no": 32, "name": "林瑾萱", "gender": "女", "style": "璀璨耀眼"}, {"no": 33, "name": "王語柔", "gender": "女", "style": "璀璨耀眼"}, {"no": 34, "name": "林宛凝", "gender": "女", "style": "恬靜淡雅"}, {"no": 35, "name": "蔡依諾", "gender": "女", "style": "恬靜淡雅"}, {"no": 36, "name": "蔡采薇", "gender": "女", "style": "恬靜淡雅"}];
+const LOCAL_KEY='class113-seating-v1';
+const GITHUB_KEY='class113-github-config-v1';
+let order=loadLocal()||students.map(s=>s.no);
+let dragged=null;
+const grid=document.querySelector('#grid'),status=document.querySelector('#status');
+
+function loadLocal(){try{let x=JSON.parse(localStorage.getItem(LOCAL_KEY));return Array.isArray(x)&&x.length===36?x:null}catch(e){return null}}
+function saveLocal(){localStorage.setItem(LOCAL_KEY,JSON.stringify(order))}
+function loadGithubConfig(){try{let x=JSON.parse(localStorage.getItem(GITHUB_KEY));return x||null}catch(e){return null}}
+function saveGithubConfig(cfg){localStorage.setItem(GITHUB_KEY,JSON.stringify(cfg))}
+
+function render(){
+  grid.innerHTML='';
+  order.forEach((no,i)=>{
+    let s=students.find(x=>x.no===no),el=document.createElement('div');
+    el.className='seat'+(s?'':' empty');
+    el.draggable=!!s;
+    el.dataset.index=i;
+    el.innerHTML=s?`<div class="num">座號 ${s.no}</div><div class="name">${s.name}</div><div class="meta">${s.gender}・${s.style}</div>`:`<div>空位</div>`;
+    if(s){
+      el.addEventListener('dragstart',()=>{dragged=i;el.classList.add('dragging')});
+      el.addEventListener('dragend',()=>{dragged=null;el.classList.remove('dragging');document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+    }
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});
+    el.addEventListener('dragleave',()=>el.classList.remove('over'));
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');if(dragged!==null&&dragged!==i){[order[dragged],order[i]]=[order[i],order[dragged]];render();status.textContent='已調整，請按「確認並儲存」'}});
+    grid.appendChild(el);
+  });
+}
+
+document.querySelector('#save').onclick=()=>{saveLocal();status.textContent='已儲存至本地瀏覽器：下次開啟會自動載入'};
+
+document.querySelector('#push').onclick=async()=>{
+  let cfg=loadGithubConfig();
+  if(!cfg){
+    cfg={owner:'',repo:'',branch:'main',token:''};
+    let input=confirm('請先設定 GitHub 上傳資訊：\n\n- 您的 GitHub 使用者名稱（owner）\n- Repository 名稱（repo）\n- Branch 名稱（預設 main）\n- Personal Access Token（需 repo 權限）\n\n按下「確定」後將引導您設定。');
+    if(!input)return;
+    let owner=prompt('GitHub 使用者名稱（owner）：','');
+    if(!owner)return;
+    let repo=prompt('Repository 名稱（不含 owner）：','');
+    if(!repo)return;
+    let branch=prompt('Branch 名稱（預設 main）：','main');
+    if(!branch)return;
+    let token=prompt('Personal Access Token（需 repo 權限）：\n\n若尚未產生，請前往：\nhttps://github.com/settings/tokens\n建立 classic token，勾選 repo 權限。','');
+    if(!token)return;
+    cfg={owner,repo,branch,token};
+    saveGithubConfig(cfg);
+  }
+  status.textContent='準備上傳至 GitHub...';
+  try{
+    let path='seating.json';
+    let url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+    let sha='';
+    try{
+      let r=await fetch(url,{headers:{Authorization:`token ${cfg.token}`,Accept:'application/vnd.github.v3+json'}});
+      if(r.ok){let j=await r.json();sha=j.sha||'';}
+    }catch(e){}
+    let body={
+      message:'更新 113 班座位表（自動）',
+      content:btoa(unescape(encodeURIComponent(JSON.stringify(order)))),
+      branch:cfg.branch
+    };
+    if(sha)body.sha=sha;
+    let res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${cfg.token}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok){let t=await res.text();throw new Error(t);}
+    status.textContent='已上傳至 GitHub！下次開啟會自動載入雲端最新版本';
+  }catch(err){
+    console.error(err);
+    status.textContent='上傳失敗，請檢查 owner/repo/branch/token 設定';
+  }
+};
+
+document.querySelector('#reset').onclick=()=>{if(confirm('恢復由 1 號至 36 號的預設排列？')){order=students.map(s=>s.no);render();status.textContent='已恢復預設，尚未儲存'}};
+document.querySelector('#clear').onclick=()=>{if(confirm('清除本裝置的本地儲存版本並恢復預設？')){localStorage.removeItem(LOCAL_KEY);order=students.map(s=>s.no);render();status.textContent='已清除本地儲存版本'}};
+
+async function loadFromGithub(){
+  let cfg=loadGithubConfig();
+  if(!cfg)return false;
+  try{
+    let url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/seating.json?ref=${cfg.branch}`;
+    let r=await fetch(url,{headers:{Accept:'application/vnd.github.v3+json'}});
+    if(!r.ok)return false;
+    let j=await r.json();
+    let txt=atob(j.content);
+    let arr=JSON.parse(txt);
+    if(Array.isArray(arr)&&arr.length===36){order=arr;return true;}
+  }catch(e){}
+  return false;
+}
+
+(async function init(){
+  let loaded=false;
+  try{loaded=await loadFromGithub();}catch(e){}
+  if(!loaded){let local=loadLocal();if(local)order=local;}
+  render();
+  status.textContent=loaded?'已載入 GitHub 最新版本':'已載入本地版本';
+})();
 </script></body></html>
