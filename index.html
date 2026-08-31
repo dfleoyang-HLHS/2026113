@@ -26,13 +26,14 @@ button.danger{background:#fee2e2;color:#991b1b}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 5px;color:var(--muted);font-size:13px}
 .legend span{padding:5px 9px;border-radius:999px;background:#eef2ff}
 @media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
-</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>操作：以滑鼠拖放</span><span>手機：長按後拖曳</span><span>本地資料儲存在瀏覽器</span></div></section></main>
+</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="config" title="修改 GitHub 設定">設定</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>操作：以滑鼠拖放</span><span>手機：長按後拖曳</span><span>本地資料儲存在瀏覽器</span></div></section></main>
 <script>
 const students=[{"no": 1, "name": "林奕辰", "gender": "男", "style": "溫潤儒雅"}, {"no": 2, "name": "王沐宸", "gender": "男", "style": "溫潤儒雅"}, {"no": 3, "name": "蔡書瑤", "gender": "男", "style": "溫潤儒雅"}, {"no": 4, "name": "蔡宇軒", "gender": "男", "style": "溫潤儒雅"}, {"no": 5, "name": "林彥博", "gender": "男", "style": "溫潤儒雅"}, {"no": 6, "name": "張錦程", "gender": "男", "style": "沉穩大氣"}, {"no": 7, "name": "楊銘澤", "gender": "男", "style": "沉穩大氣"}, {"no": 8, "name": "楊浩宇", "gender": "男", "style": "沉穩大氣"}, {"no": 9, "name": "蔡柏霖", "gender": "男", "style": "沉穩大氣"}, {"no": 10, "name": "吳承睿", "gender": "男", "style": "沉穩大氣"}, {"no": 11, "name": "楊沐陽", "gender": "男", "style": "陽光活力"}, {"no": 12, "name": "蔡子騫", "gender": "男", "style": "陽光活力"}, {"no": 13, "name": "劉致遠", "gender": "男", "style": "陽光活力"}, {"no": 14, "name": "楊思源", "gender": "男", "style": "陽光活力"}, {"no": 15, "name": "劉竣宇", "gender": "男", "style": "陽光活力"}, {"no": 16, "name": "張梓豪", "gender": "男", "style": "自然清新"}, {"no": 17, "name": "陳若霖", "gender": "男", "style": "自然清新"}, {"no": 18, "name": "楊昕磊", "gender": "男", "style": "自然清新"}, {"no": 19, "name": "李雨桐", "gender": "女", "style": "溫婉靈動"}, {"no": 20, "name": "林錦汐", "gender": "女", "style": "溫婉靈動"}, {"no": 21, "name": "劉沐瑤", "gender": "女", "style": "溫婉靈動"}, {"no": 22, "name": "陳汐玥", "gender": "女", "style": "溫婉靈動"}, {"no": 23, "name": "劉羽菲", "gender": "女", "style": "溫婉靈動"}, {"no": 24, "name": "王芷晴", "gender": "女", "style": "知性優雅"}, {"no": 25, "name": "張若妤", "gender": "女", "style": "知性優雅"}, {"no": 26, "name": "吳絜予", "gender": "女", "style": "知性優雅"}, {"no": 27, "name": "李昕妤", "gender": "女", "style": "知性優雅"}, {"no": 28, "name": "王曼吟", "gender": "女", "style": "知性優雅"}, {"no": 29, "name": "王玥霖", "gender": "女", "style": "璀璨耀眼"}, {"no": 30, "name": "吳芊妤", "gender": "女", "style": "璀璨耀眼"}, {"no": 31, "name": "蔡芯怡", "gender": "女", "style": "璀璨耀眼"}, {"no": 32, "name": "林瑾萱", "gender": "女", "style": "璀璨耀眼"}, {"no": 33, "name": "王語柔", "gender": "女", "style": "璀璨耀眼"}, {"no": 34, "name": "林宛凝", "gender": "女", "style": "恬靜淡雅"}, {"no": 35, "name": "蔡依諾", "gender": "女", "style": "恬靜淡雅"}, {"no": 36, "name": "蔡采薇", "gender": "女", "style": "恬靜淡雅"}];
 const LOCAL_KEY='class113-seating-v1';
 const GITHUB_KEY='class113-github-config-v1';
 let order=loadLocal()||students.map(s=>s.no);
 let dragged=null;
+let githubConfig=null;
 const grid=document.querySelector('#grid'),status=document.querySelector('#status');
 
 function loadLocal(){try{let x=JSON.parse(localStorage.getItem(LOCAL_KEY));return Array.isArray(x)&&x.length===36?x:null}catch(e){return null}}
@@ -59,23 +60,44 @@ function render(){
   });
 }
 
+async function loadConfigFromGithub(){
+  try{
+    let r=await fetch('config.json');
+    if(!r.ok) return null;
+    let j=await r.json();
+    if(j.owner&&j.repo&&j.branch) return j;
+  }catch(e){}
+  return null;
+}
+
 document.querySelector('#save').onclick=()=>{saveLocal();status.textContent='已儲存至本地瀏覽器：下次開啟會自動載入'};
 
-document.querySelector('#push').onclick=async()=>{
+document.querySelector('#config').onclick=async()=>{
   let cfg=loadGithubConfig();
-  if(!cfg){
-    cfg={owner:'',repo:'',branch:'main',token:''};
-    let input=confirm('請先設定 GitHub 上傳資訊：\n\n- 您的 GitHub 使用者名稱（owner）\n- Repository 名稱（repo）\n- Branch 名稱（預設 main）\n- Personal Access Token（需 repo 權限）\n\n按下「確定」後將引導您設定。');
-    if(!input)return;
-    let owner=prompt('GitHub 使用者名稱（owner）：','');
-    if(!owner)return;
-    let repo=prompt('Repository 名稱（不含 owner）：','');
-    if(!repo)return;
-    let branch=prompt('Branch 名稱（預設 main）：','main');
-    if(!branch)return;
-    let token=prompt('Personal Access Token（需 repo 權限）：\n\n若尚未產生，請前往：\nhttps://github.com/settings/tokens\n建立 classic token，勾選 repo 權限。','');
-    if(!token)return;
-    cfg={owner,repo,branch,token};
+  if(!cfg) cfg={owner:'',repo:'',branch:'main',token:''};
+  let owner=prompt('GitHub 使用者名稱（owner）：',cfg.owner||'');
+  if(owner===null) return;
+  let repo=prompt('Repository 名稱（不含 owner）：',cfg.repo||'');
+  if(repo===null) return;
+  let branch=prompt('Branch 名稱（預設 main）：',cfg.branch||'main');
+  if(branch===null) return;
+  let token=prompt('Personal Access Token（需 repo 權限）：',cfg.token||'');
+  if(token===null) return;
+  cfg={owner:owner||'',repo:repo||'',branch:branch||'main',token:token||''};
+  saveGithubConfig(cfg);
+  status.textContent='GitHub 設定已更新';
+};
+
+document.querySelector('#push').onclick=async()=>{
+  let cfg=githubConfig||loadGithubConfig();
+  if(!cfg||!cfg.owner||!cfg.repo||!cfg.branch){
+    alert('尚未設定 GitHub 資訊，請先按「設定」按鈕。');
+    return;
+  }
+  if(!cfg.token){
+    let token=prompt('請輸入 Personal Access Token（需 repo 權限）：','');
+    if(!token) return;
+    cfg.token=token;
     saveGithubConfig(cfg);
   }
   status.textContent='準備上傳至 GitHub...';
@@ -106,12 +128,12 @@ document.querySelector('#reset').onclick=()=>{if(confirm('恢復由 1 號至 36 
 document.querySelector('#clear').onclick=()=>{if(confirm('清除本裝置的本地儲存版本並恢復預設？')){localStorage.removeItem(LOCAL_KEY);order=students.map(s=>s.no);render();status.textContent='已清除本地儲存版本'}};
 
 async function loadFromGithub(){
-  let cfg=loadGithubConfig();
-  if(!cfg)return false;
+  let cfg=githubConfig||loadGithubConfig();
+  if(!cfg||!cfg.owner||!cfg.repo||!cfg.branch) return false;
   try{
     let url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/seating.json?ref=${cfg.branch}`;
     let r=await fetch(url,{headers:{Accept:'application/vnd.github.v3+json'}});
-    if(!r.ok)return false;
+    if(!r.ok) return false;
     let j=await r.json();
     let txt=atob(j.content);
     let arr=JSON.parse(txt);
@@ -121,6 +143,7 @@ async function loadFromGithub(){
 }
 
 (async function init(){
+  try{githubConfig=await loadConfigFromGithub();}catch(e){}
   let loaded=false;
   try{loaded=await loadFromGithub();}catch(e){}
   if(!loaded){let local=loadLocal();if(local)order=local;}
