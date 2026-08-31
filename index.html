@@ -3,157 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>教室座位表產生器</title>
+  <title>教室座位表</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    :root{--blue:#2563eb;--green:#059669;--orange:#ea580c;--purple:#7c3aed;--slate:#475569;--red:#dc2626;--bg:#f1f5f9;--card:#fff;--line:#cbd5e1;--text:#0f172a}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI","Microsoft JhengHei",Arial,sans-serif}
-    header{background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff;padding:24px;text-align:center}
-    header h1{margin:0 0 5px;font-size:clamp(1.35rem,3vw,2rem)}header p{margin:0;opacity:.9}
+    *{box-sizing:border-box}body{margin:0;background:#f1f5f9;font-family:Arial,sans-serif}
+    header{background:linear-gradient(135deg,#1d4ed8,#0f766e);color:#fff;padding:20px;text-align:center}
     .container{max-width:1400px;margin:20px auto;padding:0 16px}
-    .panel{background:var(--card);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 4px 16px #0000000d}
-    h2{font-size:1.15rem;margin:0 0 14px}
-    .controls,.github-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end}
-    .field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:5px}
-    .field input,.field select{width:100%;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:1rem;background:#fff}
-    button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-weight:700;font-size:.95rem}
-    .buttons{display:flex;flex-wrap:wrap;gap:8px}
-    .blue{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.orange{background:var(--orange);color:#fff}.purple{background:var(--purple);color:#fff}.slate{background:var(--slate);color:#fff}
-    .hint{font-size:.88rem;color:#64748b;margin:10px 0 0;line-height:1.55}.hint a{color:var(--blue)}
-    .layout{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:16px}
-    .student-list{max-height:650px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#f8fafc}
-    .student{background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:9px;margin-bottom:7px;cursor:move;user-select:none}
-    .student:active{cursor:grabbing}.student.dragging{opacity:.35}
-    .student strong{display:block}.student small{color:#334155}.student.assigned{opacity:.45;background:#e2e8f0}
-    .classroom-wrap{overflow:auto}.classroom{min-width:650px;background:#fff;border:2px solid #94a3b8;border-radius:14px;padding:20px}
-    .front{background:#e2e8f0;border:2px dashed #64748b;text-align:center;border-radius:8px;padding:9px;margin-bottom:18px;font-weight:700}
-    .seat-grid{display:grid;gap:10px}
-    .seat{min-height:92px;border:2px dashed #94a3b8;border-radius:10px;background:#f8fafc;padding:7px;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
-    .seat.dragover{background:#dbeafe;border:3px solid var(--blue)}
-    .seat-number{position:absolute;top:4px;left:6px;font-size:.72rem;color:#64748b}
+    .panel{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px #0000000d}
+    h2{margin:0 0 12px;font-size:1.1rem}
+    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    label{display:block;font-weight:700;font-size:.85rem;margin-bottom:4px}
+    input,select{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}
+    button{border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:700;margin:4px 4px 0 0}
+    .blue{background:#2563eb;color:#fff}.green{background:#059669;color:#fff}.orange{background:#ea580c;color:#fff}.purple{background:#7c3aed;color:#fff}.slate{background:#475569;color:#fff}
+    .hint{font-size:.85rem;color:#64748b;margin-top:8px}
+    .layout{display:grid;grid-template-columns:300px 1fr;gap:16px}
+    .student-list{max-height:600px;overflow:auto;border:1px solid #cbd5e1;border-radius:8px;padding:8px;background:#f8fafc}
+    .student{background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;padding:8px;margin-bottom:6px;cursor:move}
+    .student:active{cursor:grabbing}.student.assigned{opacity:.5;background:#e2e8f0}
+    .classroom{background:#fff;border:2px solid #94a3b8;border-radius:12px;padding:16px}
+    .front{background:#e2e8f0;border:2px dashed #64748b;text-align:center;border-radius:6px;padding:8px;margin-bottom:16px;font-weight:700}
+    .seat-grid{display:grid;gap:8px}
+    .seat{min-height:80px;border:2px dashed #94a3b8;border-radius:8px;background:#f8fafc;padding:6px;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
+    .seat.dragover{background:#dbeafe;border:3px solid #2563eb}
+    .seat-number{position:absolute;top:3px;left:5px;font-size:.7rem;color:#64748b}
     .seat.empty{color:#94a3b8}
-    .student-card{font-size:.86rem;line-height:1.35;cursor:move;padding:8px;width:100%;border-radius:6px;background:#eff6ff;border:1px solid #93c5fd}
-    .student-card:active{cursor:grabbing}.student-card.dragging{opacity:.3}
-    .student-card strong{display:block}
-    .remove{position:absolute;right:4px;top:2px;border:0;background:transparent;color:var(--red);padding:0 4px;font-size:1.1rem;cursor:pointer}
-    .drop-message{margin:0 0 12px;padding:9px 12px;border-radius:8px;background:#eff6ff;color:#1d4ed8;font-size:.9rem}
-    .stats{display:flex;gap:15px;flex-wrap:wrap;font-weight:700;margin-bottom:10px}
-    .table-wrap{overflow:auto}.preview-table{width:100%;border-collapse:collapse}
-    .preview-table th,.preview-table td{border:1px solid var(--line);padding:6px;text-align:center}
-    .preview-table th{background:#e2e8f0}
-    .status{margin-top:12px;padding:12px;border-radius:8px;font-size:.9rem}
+    .student-card{font-size:.85rem;cursor:move;padding:6px;width:100%;border-radius:4px;background:#eff6ff;border:1px solid #93c5fd}
+    .student-card:active{cursor:grabbing}
+    .remove{position:absolute;right:3px;top:2px;border:0;background:transparent;color:#dc2626;padding:0 3px;font-size:1rem;cursor:pointer}
+    .drop-msg{margin:0 0 10px;padding:8px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:.85rem}
+    .stats{display:flex;gap:12px;font-weight:700;margin-bottom:8px}
+    .status{margin-top:10px;padding:10px;border-radius:6px;font-size:.85rem}
     .status.success{background:#dcfce7;color:#166534}.status.error{background:#fee2e2;color:#991b1b}.status.info{background:#dbeafe;color:#1e40af}
-    @media(max-width:800px){.layout{grid-template-columns:1fr}.student-list{max-height:300px}.classroom{min-width:560px}}
-    @media print{header,.controls-panel,.github-section,.student-panel,.preview-panel,.hint,.drop-message{display:none!important}.container{margin:0;max-width:none}.panel{box-shadow:none}.classroom{border:1px solid #000}}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}.student-list{max-height:250px}}
+    @media print{header,.controls,.github-section,.student-panel,.hint,.drop-msg{display:none!important}.container{margin:0}.panel{box-shadow:none}.classroom{border:1px solid #000}}
   </style>
 </head>
 <body>
 <header><h1>教室座位表產生器</h1><p>Classroom Seating Chart Generator</p></header>
 <main class="container">
-  <section class="panel controls-panel">
+  <section class="panel">
     <div class="controls">
-      <div class="field"><label for="fileInput">上傳點名表</label><input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></div>
-      <div class="field"><label for="cols">每排座位數</label><select id="cols"><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
-      <div class="field"><label for="order">排列方式</label><select id="order"><option value="row">由前到後、逐排</option><option value="column">由左到右、逐欄</option><option value="number">依班級座號</option></select></div>
-      <div class="field"><label for="title">標題</label><input id="title" value="教室座位表"></div>
+      <div><label>上傳點名表</label><input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></div>
+      <div><label>每排座位數</label><select id="cols"><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
+      <div><label>排列方式</label><select id="order"><option value="row">由前到後</option><option value="column">由左到右</option><option value="number">依座號</option></select></div>
+      <div><label>標題</label><input id="title" value="教室座位表"></div>
     </div>
-    <div class="buttons" style="margin-top:14px">
+    <div style="margin-top:10px">
       <button class="blue" id="autoBtn">自動填滿</button>
-      <button class="slate" id="clearBtn">清除座位</button>
-      <button class="green" id="excelBtn">下載 Excel</button>
-      <button class="orange" id="pdfBtn">下載 PDF</button>
-      <button class="slate" id="printBtn">列印</button>
+      <button class="slate" id="clearBtn">清除</button>
+      <button class="green" id="excelBtn">Excel</button>
+      <button class="orange" id="pdfBtn">PDF</button>
     </div>
-    <p class="hint">拖放規則：座位之間拖曳會交換；從名單拖到座位會入座；從座位拖回名單會取消入座。</p>
+    <p class="hint">拖放：座位間拖曳＝交換；名單→座位＝入座；座位→名單＝取消</p>
   </section>
 
   <section class="panel github-section">
-    <h2>GitHub 同步</h2>
-    <div class="buttons" style="margin-bottom:12px">
-      <button class="green" id="saveLocalBtn">💾 儲存本機</button>
-      <button class="blue" id="loadLocalBtn">📂 從本機載入</button>
-      <button class="purple" id="uploadBtn">📤 上傳 GitHub</button>
-      <button class="blue" id="loadGithubBtn">📥 從 GitHub 載入</button>
-      <button class="slate" id="jsonBtn">📄 下載 JSON</button>
-      <button class="slate" id="clearTokenBtn">🗑️ 清除 Token</button>
+    <h2>GitHub</h2>
+    <div style="margin-bottom:8px">
+      <button class="green" id="saveLocalBtn">💾 本機</button>
+      <button class="blue" id="loadLocalBtn">📂 載入</button>
+      <button class="purple" id="uploadBtn">📤 上傳</button>
+      <button class="blue" id="loadGithubBtn">📥 下載</button>
+      <button class="slate" id="jsonBtn">JSON</button>
+      <button class="slate" id="clearTokenBtn">清除 Token</button>
     </div>
-    <div class="github-grid">
-      <div class="field"><label>GitHub 使用者名稱</label><input id="ghUser" value="dfleoyang-HLHS"></div>
-      <div class="field"><label>儲存庫名稱</label><input id="ghRepo" value="2026113"></div>
-      <div class="field"><label>Personal Access Token</label><input id="ghToken" type="password" placeholder="ghp_..."></div>
-      <div class="field"><label>分支</label><input id="ghBranch" value="main"></div>
-      <div class="field"><label>檔案路徑</label><input id="ghPath" value="seating_data.json"></div>
+    <div class="controls">
+      <div><label>使用者</label><input id="ghUser" value="dfleoyang-HLHS"></div>
+      <div><label>儲存庫</label><input id="ghRepo" value="2026113"></div>
+      <div><label>Token</label><input id="ghToken" type="password" placeholder="ghp_..."></div>
+      <div><label>分支</label><input id="ghBranch" value="main"></div>
+      <div><label>路徑</label><input id="ghPath" value="seating_data.json"></div>
     </div>
-    <div id="ghStatus" class="status" hidden></div>
-    <p class="hint">使用流程：上傳 Excel → 調整座位 → 儲存本機 → 確認無誤 → 上傳 GitHub。Token 只儲存在本機。</p>
+    <div id="ghStatus" class="status" style="display:none"></div>
   </section>
 
   <div class="layout">
     <section class="panel student-panel">
       <h2>學生名單</h2>
-      <div class="stats"><span id="total">總人數：0</span><span id="assigned">已入座：0</span></div>
-      <div class="drop-message">把座位中的學生拖到這裡，可取消入座。</div>
+      <div class="stats"><span id="total">0 人</span><span id="assigned">0 入座</span></div>
+      <div class="drop-msg">拖學生到這裡取消入座</div>
       <div id="studentList" class="student-list"></div>
     </section>
     <section class="panel">
       <h2 id="chartTitle">教室座位表</h2>
-      <div class="classroom-wrap">
-        <div id="classroom" class="classroom">
-          <div class="front">講台</div>
-          <div id="seatGrid" class="seat-grid"></div>
-        </div>
+      <div class="classroom">
+        <div class="front">講台</div>
+        <div id="seatGrid" class="seat-grid"></div>
       </div>
     </section>
   </div>
-
-  <section class="panel preview-panel">
-    <h2>座位預覽</h2>
-    <div class="table-wrap">
-      <table class="preview-table">
-        <thead><tr><th>座位</th><th>班級</th><th>座號</th><th>姓名</th><th>學號</th></tr></thead>
-        <tbody id="previewBody"></tbody>
-      </table>
-    </div>
-  </section>
 </main>
 <script>
-(function(){
-var CONFIG_KEY='seating_config_v1',LOCAL_KEY='seating_data_local_v1';
 var students=[],seats=[],cols=6;
 function $(id){return document.getElementById(id);}
 function esc(v){return String(v||'').replace(/[&<>'"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])})}
-function showStatus(type,msg,html){var el=$('ghStatus');el.hidden=false;el.className='status '+type;if(html)el.innerHTML=msg;else el.textContent=msg}
-function getConfig(){return{user:$('ghUser').value.trim(),repo:$('ghRepo').value.trim(),token:$('ghToken').value.trim(),branch:$('ghBranch').value.trim()||'main',path:($('ghPath').value.trim()||'seating_data.json').replace(/^\/+/,'')}}
-function saveConfig(){try{localStorage.setItem(CONFIG_KEY,JSON.stringify(getConfig()))}catch(e){}}
-function restoreConfig(){try{var c=JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}');$('ghUser').value=c.user||'dfleoyang-HLHS';$('ghRepo').value=c.repo||'2026113';$('ghToken').value=c.token||'';$('ghBranch').value=c.branch||'main';$('ghPath').value=c.path||'seating_data.json'}catch(e){}}
-function clearToken(){var c=getConfig();c.token='';localStorage.setItem(CONFIG_KEY,JSON.stringify(c));$('ghToken').value='';showStatus('success','已清除 Token')}
-function updateStats(){$('total').textContent='總人數：'+students.length;$('assigned').textContent='已入座：'+students.filter(function(s){return s.seat!==null}).length}
-function refresh(){renderSeats();renderRoster();renderPreview()}
-function renderRoster(){var list=$('studentList');list.innerHTML='';students.forEach(function(s){var d=document.createElement('div');d.className='student'+(s.seat!==null?' assigned':'');d.draggable=true;d.innerHTML='<strong>'+esc(s.name)+'</strong><small>班級 '+esc(s.className)+'｜座號 '+esc(s.number)+'｜學號 '+esc(s.id)+'</small>';d.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);e.dataTransfer.setData('studentId',s.id);d.classList.add('dragging')};d.ondragend=function(){d.classList.remove('dragging')};list.appendChild(d)});updateStats()}
-function renderSeats(){var grid=$('seatGrid');grid.innerHTML='';grid.style.gridTemplateColumns='repeat('+cols+',minmax(80px,1fr))';for(var i=0;i<seats.length;i++){var id=seats[i],s=id&&students.find(function(x){return x.id===id});var seat=document.createElement('div');seat.className='seat'+(s?'':' empty');seat.dataset.index=i;seat.innerHTML='<span class="seat-number">'+(i+1)+'</span>'+(s?'<div class="student-card" draggable="true"><button class="remove">x</button><strong>'+esc(s.name)+'</strong><span>'+esc(s.className)+'｜'+esc(s.number)+'</span><br><small>'+esc(s.id)+'</small></div>':'空位');if(s){var card=seat.querySelector('.student-card');card.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);e.dataTransfer.setData('studentId',s.id);card.classList.add('dragging')};card.ondragend=function(){card.classList.remove('dragging')};seat.querySelector('.remove').onclick=function(e){e.stopPropagation();removeStudent(i)}}}seat.ondragover=function(e){e.preventDefault();e.dataTransfer.dropEffect='move';seat.classList.add('dragover')};seat.ondragleave=function(){seat.classList.remove('dragover')};seat.ondrop=function(e){e.preventDefault();e.stopPropagation();seat.classList.remove('dragover');var id=e.dataTransfer.getData('studentId')||e.dataTransfer.getData('text/plain');if(id)moveOrSwap(id,i)};grid.appendChild(seat)}}
-function renderPreview(){$('previewBody').innerHTML=seats.map(function(id,i){var s=id&&students.find(function(x){return x.id===id});return '<tr><td>'+(i+1)+'</td><td>'+esc(s?s.className:'')+'</td><td>'+esc(s?s.number:'')+'</td><td>'+esc(s?s.name:'空位')+'</td><td>'+esc(s?s.id:'')+'</td></tr>'}).join('')}
-function createGrid(){cols=Number($('cols').value);var rows=Math.ceil(students.length/cols);seats=Array(rows*cols).fill(null);students.forEach(function(s){s.seat=null});renderSeats();refresh()}
-function removeStudent(i){var id=seats[i],s=students.find(function(x){return x.id===id});if(s)s.seat=null;seats[i]=null;renderSeats();refresh()}
-function moveOrSwap(id,target){var moving=students.find(function(s){return s.id===id});if(!moving||target<0||target>=seats.length)return;var source=moving.seat;if(source===target)return;var targetId=seats[target];if(source!==null&&targetId){var other=students.find(function(s){return s.id===targetId});seats[source]=targetId;seats[target]=id;moving.seat=target;if(other)other.seat=source}else if(source!==null){seats[source]=null;seats[target]=id;moving.seat=target}else{if(targetId){var other=students.find(function(s){return s.id===targetId});if(other)other.seat=null}seats[target]=id;moving.seat=target}renderSeats();refresh()}
-function autoFill(){students.forEach(function(s){s.seat=null});seats.fill(null);var list=[...students];if($('order').value==='number')list.sort(function(a,b){return (a.className+'-'+a.number).localeCompare(b.className+'-'+b.number,'zh-Hant',{numeric:true})});if($('order').value==='column'){var rows=Math.ceil(list.length/cols);list.forEach(function(s,i){var pos=(i%rows)*cols+Math.floor(i/rows);if(pos<seats.length){seats[pos]=s.id;s.seat=pos}})}else list.forEach(function(s,i){seats[i]=s.id;s.seat=i});renderSeats();refresh()}
-function parseRoster(rows){if(!rows||rows.length<2)throw new Error('Excel 為空');var hi=-1;for(var i=0;i<Math.min(rows.length,5);i++){if(rows[i].some(function(v){return String(v).includes('學號')})){hi=i;break}}if(hi<0)throw new Error('找不到學號欄位');var h=rows[hi].map(function(v){return String(v).trim().toLowerCase()});var ix={id:h.findIndex(function(v){return v.includes('學號')}),cls:h.findIndex(function(v){return v.includes('班級')}),no:h.findIndex(function(v){return v.includes('座號')}),name:h.findIndex(function(v){return v.includes('姓名')})};if(ix.id<0||ix.cls<0||ix.no<0||ix.name<0)throw new Error('缺少必要欄位');return rows.slice(hi+1).map(function(r){return{id:String(r[ix.id]||'').trim(),className:String(r[ix.cls]||'').trim(),number:String(r[ix.no]||'').trim(),name:String(r[ix.name]||'').trim(),seat:null}}).filter(function(s){return s.id&&s.name})}
-function exportData(){return{title:$('chartTitle').textContent,updatedAt:new Date().toISOString(),totalStudents:students.length,layout:{seatsPerRow:cols,rows:Math.ceil(seats.length/cols),arrangement:$('order').value},seats:seats.map(function(id,i){var s=id&&students.find(function(x){return x.id===id});return{seat:i+1,studentId:s?s.id:null,className:s?s.className:null,number:s?s.number:null,name:s?s.name:null}})}}
-function importData(data){if(!data||!data.seats||data.seats.length===0)throw new Error('無資料');var m=new Map();data.seats.forEach(function(it){if(it.studentId&&it.name&&!m.has(it.studentId))m.set(it.studentId,{id:String(it.studentId),className:String(it.className||''),number:String(it.number||''),name:String(it.name),seat:null})});students=[...m.values()];cols=Number(data.layout&&data.layout.seatsPerRow)||6;if([5,6,7,8].indexOf(cols)<0)cols=6;$('cols').value=cols;if(data.layout&&data.layout.arrangement)$('order').value=data.layout.arrangement;if(data.title)$('chartTitle').textContent=data.title;var max=Math.max.apply(null,data.seats.map(function(it){return Number(it.seat)||0}).concat([students.length]));var rows=Math.ceil(max/cols);seats=Array(Math.max(rows*cols,students.length)).fill(null);data.seats.forEach(function(it){var p=Number(it.seat)-1;if(it.studentId&&p>=0&&p<seats.length){var s=students.find(function(x){return x.id===String(it.studentId)});if(s&&!seats[p]){seats[p]=s.id;s.seat=p}}});renderSeats();refresh()}
-function loadFromGitHub(){var c=getConfig();if(!c.user||!c.repo)return false;showStatus('info','載入中...');fetch('https://raw.githubusercontent.com/'+c.user+'/'+c.repo+'/'+c.branch+'/'+c.path+'?v='+Date.now()).then(function(r){if(r.status===404){showStatus('info','GitHub 上無資料');return null}if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(data){if(data){importData(data);showStatus('success','已載入 '+students.length+' 位學生')}}).catch(function(e){showStatus('error','載入失敗：'+e.message)})}
-function uploadToGitHub(){var c=getConfig();saveConfig();if(!c.user||!c.repo||!c.token){showStatus('error','請填寫 Token');return}if(students.length===0){showStatus('error','無學生資料');return}showStatus('info','上傳中...');var api='https://api.github.com/repos/'+c.user+'/'+c.repo+'/contents/'+c.path;fetch(api+'?ref='+c.branch,{headers:{Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json'}}).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha});else if(r.status!==404)return r.json().then(function(d){throw new Error(d.message)});else return null}).then(function(sha){var body={message:'Update '+new Date().toLocaleString('zh-TW'),content:btoa(unescape(encodeURIComponent(JSON.stringify(exportData(),null,2)))),branch:c.branch};if(sha)body.sha=sha;return fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+c.token,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify(body)})}).then(function(r){return r.json()}).then(function(){showStatus('success','上傳成功！')}).catch(function(e){showStatus('error','上傳失敗：'+e.message)})}
-function downloadJson(){var b=new Blob([JSON.stringify(exportData(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='seating_data.json';a.click();URL.revokeObjectURL(u)}
-function saveLocal(){localStorage.setItem(LOCAL_KEY,JSON.stringify(exportData()));showStatus('success','已儲存到本機')}
-function loadLocal(){var r=localStorage.getItem(LOCAL_KEY);if(!r){showStatus('info','本機無資料');return}importData(JSON.parse(r));showStatus('success','已從本機載入')}
-$('studentList').ondragover=function(e){e.preventDefault();$('studentList').style.background='#dbeafe'};$('studentList').ondragleave=function(){$('studentList').style.background='#f8fafc'};$('studentList').ondrop=function(e){e.preventDefault();$('studentList').style.background='#f8fafc';var s=students.find(function(x){return x.id===e.dataTransfer.getData('studentId')});if(s&&s.seat!==null)removeStudent(s.seat)};
-$('fileInput').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''}),parsed=parseRoster(rows);students=parsed;createGrid();autoFill();showStatus('success','已載入 '+students.length+' 位學生')}catch(err){showStatus('error','讀取失敗：'+err.message)}};r.readAsArrayBuffer(f)};
-$('cols').onchange=createGrid;$('autoBtn').onclick=autoFill;$('clearBtn').onclick=function(){students.forEach(function(s){s.seat=null});seats.fill(null);renderSeats();refresh()};$('title').oninput=function(e){$('chartTitle').textContent=e.target.value||'教室座位表'};$('uploadBtn').onclick=uploadToGitHub;$('loadGithubBtn').onclick=function(){loadFromGitHub()};$('jsonBtn').onclick=downloadJson;$('clearTokenBtn').onclick=clearToken;$('saveLocalBtn').onclick=saveLocal;$('loadLocalBtn').onclick=loadLocal;
+function showStatus(type,msg){var el=$('ghStatus');el.style.display='block';el.className='status '+type;el.textContent=msg}
+function updateStats(){$('total').textContent=students.length+' 人';$('assigned').textContent=students.filter(function(s){return s.seat!==null}).length+' 入座'}
+function render(){renderRoster();renderSeats()}
+function renderRoster(){var list=$('studentList');list.innerHTML='';students.forEach(function(s){var d=document.createElement('div');d.className='student'+(s.seat!==null?' assigned':'');d.draggable=true;d.innerHTML='<strong>'+esc(s.name)+'</strong><br><small>'+esc(s.className)+' '+esc(s.number)+'</small>';d.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);d.classList.add('dragging')};d.ondragend=function(){d.classList.remove('dragging')};list.appendChild(d)});updateStats()}
+function renderSeats(){var grid=$('seatGrid');grid.innerHTML='';grid.style.gridTemplateColumns='repeat('+cols+',1fr)';for(var i=0;i<seats.length;i++){var id=seats[i],s=id&&students.find(function(x){return x.id===id});var seat=document.createElement('div');seat.className='seat'+(s?'':' empty');seat.innerHTML='<span class="seat-number">'+(i+1)+'</span>'+(s?'<div class="student-card" draggable="true"><button class="remove">x</button><strong>'+esc(s.name)+'</strong></div>':'空位');seat.ondragover=function(e){e.preventDefault();seat.classList.add('dragover')};seat.ondragleave=function(){seat.classList.remove('dragover')};seat.ondrop=function(e){e.preventDefault();seat.classList.remove('dragover');var id=e.dataTransfer.getData('text/plain');if(id)swap(id,i)};if(s){var card=seat.querySelector('.student-card');card.ondragstart=function(e){e.dataTransfer.setData('text/plain',s.id);card.classList.add('dragging')};card.ondragend=function(){card.classList.remove('dragging')};seat.querySelector('.remove').onclick=function(e){e.stopPropagation();remove(i)}};grid.appendChild(seat)}}
+function createGrid(){cols=Number($('cols').value);var rows=Math.ceil(students.length/cols);seats=Array(rows*cols).fill(null);students.forEach(function(s){s.seat=null});render()}
+function remove(i){var id=seats[i],s=students.find(function(x){return x.id===id});if(s)s.seat=null;seats[i]=null;render()}
+function swap(id,target){var moving=students.find(function(s){return s.id===id});if(!moving)return;var source=moving.seat;if(source===target)return;var targetId=seats[target];if(source!==null&&targetId){var other=students.find(function(s){return s.id===targetId});seats[source]=targetId;seats[target]=id;moving.seat=target;if(other)other.seat=source}else if(source!==null){seats[source]=null;seats[target]=id;moving.seat=target}else{if(targetId){var other=students.find(function(s){return s.id===targetId});if(other)other.seat=null}seats[target]=id;moving.seat=target}render()}
+function autoFill(){students.forEach(function(s){s.seat=null});seats.fill(null);var list=[...students];if($('order').value==='number')list.sort(function(a,b){return (a.className+'-'+a.number).localeCompare(b.className+'-'+b.number)});list.forEach(function(s,i){if(i<seats.length){seats[i]=s.id;s.seat=i}});render()}
+$('studentList').ondragover=function(e){e.preventDefault();$('studentList').style.background='#dbeafe'};$('studentList').ondragleave=function(){$('studentList').style.background='#f8fafc'};$('studentList').ondrop=function(e){e.preventDefault();$('studentList').style.background='#f8fafc';var s=students.find(function(x){return x.id===e.dataTransfer.getData('text/plain')});if(s&&s.seat!==null)remove(s.seat)};
+$('fileInput').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'array'}),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});var hi=-1;for(var i=0;i<Math.min(rows.length,5);i++){if(rows[i].some(function(v){return String(v).includes('學號')})){hi=i;break}}if(hi<0)throw new Error('找不到學號');var h=rows[hi].map(function(v){return String(v).trim().toLowerCase()});var ix={id:h.findIndex(function(v){return v.includes('學號')}),cls:h.findIndex(function(v){return v.includes('班級')}),no:h.findIndex(function(v){return v.includes('座號')}),name:h.findIndex(function(v){return v.includes('姓名')})};if(ix.id<0||ix.cls<0||ix.no<0||ix.name<0)throw new Error('缺少欄位');students=rows.slice(hi+1).map(function(r){return{id:String(r[ix.id]||'').trim(),className:String(r[ix.cls]||'').trim(),number:String(r[ix.no]||'').trim(),name:String(r[ix.name]||'').trim(),seat:null}}).filter(function(s){return s.id&&s.name});createGrid();autoFill();showStatus('success','載入 '+students.length+' 人')}catch(err){showStatus('error','失敗：'+err.message)}};r.readAsArrayBuffer(f)};
+$('cols').onchange=createGrid;$('autoBtn').onclick=autoFill;$('clearBtn').onclick=function(){students.forEach(function(s){s.seat=null});seats.fill(null);render()};$('title').oninput=function(e){$('chartTitle').textContent=e.target.value};
+$('saveLocalBtn').onclick=function(){localStorage.setItem('seating',JSON.stringify({students:students,seats:seats,cols:cols}));showStatus('success','已儲存')};
+$('loadLocalBtn').onclick=function(){var r=localStorage.getItem('seating');if(!r){showStatus('info','無資料');return}var d=JSON.parse(r);students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','已載入')};
+$('uploadBtn').onclick=function(){var c={user:$('ghUser').value.trim(),repo:$('ghRepo').value.trim(),token:$('ghToken').value.trim(),branch:$('ghBranch').value.trim()||'main',path:$('ghPath').value.trim()||'seating_data.json'};if(!c.user||!c.repo||!c.token){showStatus('error','請填 Token');return}if(students.length===0){showStatus('error','無資料');return}showStatus('info','上傳中...');var api='https://api.github.com/repos/'+c.user+'/'+c.repo+'/contents/'+c.path;fetch(api+'?ref='+c.branch,{headers:{Authorization:'Bearer '+c.token}}).then(function(r){if(r.ok)return r.json().then(function(d){return d.sha});else if(r.status!==404)throw new Error('HTTP '+r.status);else return null}).then(function(sha){var body={message:'Update',content:btoa(unescape(encodeURIComponent(JSON.stringify({students:students,seats:seats,cols:cols})))),branch:c.branch};if(sha)body.sha=sha;return fetch(api,{method:'PUT',headers:{Authorization:'Bearer '+c.token,'Content-Type':'application/json'},body:JSON.stringify(body)})}).then(function(r){return r.json()}).then(function(){showStatus('success','上傳成功')}).catch(function(e){showStatus('error','失敗：'+e.message)})};
+$('loadGithubBtn').onclick=function(){var c={user:$('ghUser').value.trim(),repo:$('ghRepo').value.trim(),branch:$('ghBranch').value.trim()||'main',path:$('ghPath').value.trim()||'seating_data.json'};if(!c.user||!c.repo){showStatus('error','請填使用者/儲存庫');return}showStatus('info','載入中...');fetch('https://raw.githubusercontent.com/'+c.user+'/'+c.repo+'/'+c.branch+'/'+c.path).then(function(r){if(r.status===404){showStatus('info','無資料');return null}if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(d){students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','已載入 '+students.length+' 人')}}).catch(function(e){showStatus('error','失敗：'+e.message)})};
+$('jsonBtn').onclick=function(){var b=new Blob([JSON.stringify({students:students,seats:seats,cols:cols})],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='seating.json';a.click()};
+$('clearTokenBtn').onclick=function(){$('ghToken').value='';showStatus('success','已清除')};
 $('excelBtn').onclick=function(){var d=seats.map(function(id,i){var s=id&&students.find(function(x){return x.id===id});return{'座位':i+1,'班級':s?s.className:'','座號':s?s.number:'','姓名':s?s.name:'','學號':s?s.id:''}});var ws=XLSX.utils.json_to_sheet(d),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'座位');XLSX.writeFile(wb,'seating.xlsx')};
-$('pdfBtn').onclick=function(){html2canvas($('classroom'),{scale:2,backgroundColor:'#fff'}).then(function(canvas){var jsPDF=window.jspdf.jsPDF;var pdf=new jsPDF('landscape','mm','a4');var w=277,h=canvas.height*w/canvas.width;if(h>185){h=185;w=canvas.width*h/canvas.width}pdf.text($('chartTitle').textContent,14,12);pdf.addImage(canvas.toDataURL(),'PNG',14,18,w,h);pdf.save('seating.pdf')})};
-$('printBtn').onclick=function(){window.print()};
-window.onload=function(){restoreConfig();var r=localStorage.getItem(LOCAL_KEY);if(r){importData(JSON.parse(r));showStatus('success','已從本機載入 '+students.length+' 位學生');return}loadFromGitHub()};
-})();
+$('pdfBtn').onclick=function(){html2canvas($('classroom'),{scale:2}).then(function(canvas){var jsPDF=window.jspdf.jsPDF;var pdf=new jsPDF('landscape','mm','a4');var w=277,h=canvas.height*w/canvas.width;if(h>180){h=180;w=canvas.width*h/canvas.width}pdf.text($('chartTitle').textContent,14,12);pdf.addImage(canvas.toDataURL(),'PNG',14,18,w,h);pdf.save('seating.pdf')})};
+window.onload=function(){var r=localStorage.getItem('seating');if(r){var d=JSON.parse(r);students=d.students;seats=d.seats;cols=d.cols||6;$('cols').value=cols;render();showStatus('success','從本機載入 '+students.length+' 人')}};
 </script>
 </body>
 </html>
