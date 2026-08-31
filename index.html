@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>113 班座位表</title>
 <style>
-:root{--bg:#f6f8fc;--card:#fff;--ink:#172033;--muted:#64748b;--accent:#2563eb;--line:#dbe3ef}
+:root{--bg:#f6f8fc;--card:#fff;--ink:#172033;--muted:#64748b;--accent:#2563eb;--line:#dbe3ef;--boy:#e0f2fe;--girl:#fce7f3}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
 header{padding:28px 20px 18px;text-align:center}
@@ -13,20 +13,23 @@ button{border:0;border-radius:10px;padding:10px 15px;font-size:15px;cursor:point
 button.primary{background:var(--accent);color:white}
 button.danger{background:#fee2e2;color:#991b1b}
 .status{color:var(--muted);font-size:14px}
+.error{color:#dc2626}
 .room{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(12px,3vw,26px);box-shadow:0 8px 30px #1e3a8a0d}
 .front{margin:0 auto 18px;text-align:center;background:#172033;color:white;border-radius:9px;padding:10px;font-weight:700;letter-spacing:.15em}
 .grid{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));gap:10px}
-.seat{min-height:102px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none}
+.seat{min-height:102px;border:2px dashed #cbd5e1;border-radius:13px;padding:9px;background:#fbfdff;transition:.15s;cursor:grab;user-select:none;touch-action:none}
 .seat.empty{display:grid;place-items:center;color:#94a3b8;cursor:default}
 .seat.dragging{opacity:.35}
 .seat.over{border-color:var(--accent);background:#eff6ff;transform:scale(1.02)}
+.seat.boy{background:var(--boy)}
+.seat.girl{background:var(--girl)}
 .num{font-size:12px;color:var(--muted)}
 .name{font-size:18px;font-weight:800;margin:7px 0 5px}
 .meta{font-size:12px;color:var(--muted)}
 .legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 5px;color:var(--muted);font-size:13px}
 .legend span{padding:5px 9px;border-radius:999px;background:#eef2ff}
 @media(max-width:650px){.grid{gap:6px}.seat{min-height:82px;padding:6px}.name{font-size:15px}.meta{font-size:11px}}
-</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="config" title="修改 GitHub 設定">設定</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>操作：以滑鼠拖放</span><span>手機：長按後拖曳</span><span>本地資料儲存在瀏覽器</span></div></section></main>
+</style></head><body><header><h1>113 班座位表</h1><p>6 排 × 6 列｜由左至右、由上至下｜拖曳座位即可交換</p></header><main><div class="toolbar"><button class="primary" id="save">確認並儲存（本地）</button><button id="push">上傳最新版本到 GitHub</button><button id="config" title="修改 GitHub 設定">設定</button><button id="reset">恢復預設排列</button><button id="clear" class="danger">清除本地儲存</button><span class="status" id="status"></span></div><section class="room"><div class="front">講　台／黑　板</div><div class="grid" id="grid"></div><div class="legend"><span>電腦：滑鼠拖放</span><span>手機：長按後拖曳</span><span>男生：淺藍色｜女生：淺粉紅色</span></div></section></main>
 <script>
 const students=[{"no": 1, "name": "林奕辰", "gender": "男", "style": "溫潤儒雅"}, {"no": 2, "name": "王沐宸", "gender": "男", "style": "溫潤儒雅"}, {"no": 3, "name": "蔡書瑤", "gender": "男", "style": "溫潤儒雅"}, {"no": 4, "name": "蔡宇軒", "gender": "男", "style": "溫潤儒雅"}, {"no": 5, "name": "林彥博", "gender": "男", "style": "溫潤儒雅"}, {"no": 6, "name": "張錦程", "gender": "男", "style": "沉穩大氣"}, {"no": 7, "name": "楊銘澤", "gender": "男", "style": "沉穩大氣"}, {"no": 8, "name": "楊浩宇", "gender": "男", "style": "沉穩大氣"}, {"no": 9, "name": "蔡柏霖", "gender": "男", "style": "沉穩大氣"}, {"no": 10, "name": "吳承睿", "gender": "男", "style": "沉穩大氣"}, {"no": 11, "name": "楊沐陽", "gender": "男", "style": "陽光活力"}, {"no": 12, "name": "蔡子騫", "gender": "男", "style": "陽光活力"}, {"no": 13, "name": "劉致遠", "gender": "男", "style": "陽光活力"}, {"no": 14, "name": "楊思源", "gender": "男", "style": "陽光活力"}, {"no": 15, "name": "劉竣宇", "gender": "男", "style": "陽光活力"}, {"no": 16, "name": "張梓豪", "gender": "男", "style": "自然清新"}, {"no": 17, "name": "陳若霖", "gender": "男", "style": "自然清新"}, {"no": 18, "name": "楊昕磊", "gender": "男", "style": "自然清新"}, {"no": 19, "name": "李雨桐", "gender": "女", "style": "溫婉靈動"}, {"no": 20, "name": "林錦汐", "gender": "女", "style": "溫婉靈動"}, {"no": 21, "name": "劉沐瑤", "gender": "女", "style": "溫婉靈動"}, {"no": 22, "name": "陳汐玥", "gender": "女", "style": "溫婉靈動"}, {"no": 23, "name": "劉羽菲", "gender": "女", "style": "溫婉靈動"}, {"no": 24, "name": "王芷晴", "gender": "女", "style": "知性優雅"}, {"no": 25, "name": "張若妤", "gender": "女", "style": "知性優雅"}, {"no": 26, "name": "吳絜予", "gender": "女", "style": "知性優雅"}, {"no": 27, "name": "李昕妤", "gender": "女", "style": "知性優雅"}, {"no": 28, "name": "王曼吟", "gender": "女", "style": "知性優雅"}, {"no": 29, "name": "王玥霖", "gender": "女", "style": "璀璨耀眼"}, {"no": 30, "name": "吳芊妤", "gender": "女", "style": "璀璨耀眼"}, {"no": 31, "name": "蔡芯怡", "gender": "女", "style": "璀璨耀眼"}, {"no": 32, "name": "林瑾萱", "gender": "女", "style": "璀璨耀眼"}, {"no": 33, "name": "王語柔", "gender": "女", "style": "璀璨耀眼"}, {"no": 34, "name": "林宛凝", "gender": "女", "style": "恬靜淡雅"}, {"no": 35, "name": "蔡依諾", "gender": "女", "style": "恬靜淡雅"}, {"no": 36, "name": "蔡采薇", "gender": "女", "style": "恬靜淡雅"}];
 const LOCAL_KEY='class113-seating-v1';
@@ -34,6 +37,8 @@ const GITHUB_KEY='class113-github-config-v1';
 let order=loadLocal()||students.map(s=>s.no);
 let dragged=null;
 let githubConfig=null;
+let touchTimer=null;
+let touchStartPos={x:0,y:0};
 const grid=document.querySelector('#grid'),status=document.querySelector('#status');
 
 function loadLocal(){try{let x=JSON.parse(localStorage.getItem(LOCAL_KEY));return Array.isArray(x)&&x.length===36?x:null}catch(e){return null}}
@@ -45,19 +50,88 @@ function render(){
   grid.innerHTML='';
   order.forEach((no,i)=>{
     let s=students.find(x=>x.no===no),el=document.createElement('div');
-    el.className='seat'+(s?'':' empty');
+    el.className='seat'+(s?'':' empty')+(s&&s.gender==='男'?' boy':'')+(s&&s.gender==='女'?' girl':'');
     el.draggable=!!s;
     el.dataset.index=i;
     el.innerHTML=s?`<div class="num">座號 ${s.no}</div><div class="name">${s.name}</div><div class="meta">${s.gender}・${s.style}</div>`:`<div>空位</div>`;
     if(s){
-      el.addEventListener('dragstart',()=>{dragged=i;el.classList.add('dragging')});
+      el.addEventListener('dragstart',e=>{dragged=i;el.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',i)});
       el.addEventListener('dragend',()=>{dragged=null;el.classList.remove('dragging');document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+      el.addEventListener('touchstart',e=>{
+        if(e.touches.length===1){
+          touchStartPos={x:e.touches[0].clientX,y:e.touches[0].clientY};
+          touchTimer=setTimeout(()=>{
+            dragged=i;
+            el.classList.add('dragging');
+            el.classList.add('over');
+          },500);
+        }
+      },{passive:true});
+      el.addEventListener('touchmove',e=>{
+        if(touchTimer&&e.touches.length===1){
+          let dx=e.touches[0].clientX-touchStartPos.x;
+          let dy=e.touches[0].clientY-touchStartPos.y;
+          if(Math.sqrt(dx*dx+dy*dy)>10){
+            clearTimeout(touchTimer);
+            touchTimer=null;
+          }
+        }
+      },{passive:true});
+      el.addEventListener('touchend',e=>{
+        clearTimeout(touchTimer);
+        touchTimer=null;
+        if(dragged!==null){
+          el.classList.remove('dragging');
+          el.classList.remove('over');
+          dragged=null;
+        }
+      });
     }
     el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});
     el.addEventListener('dragleave',()=>el.classList.remove('over'));
-    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');if(dragged!==null&&dragged!==i){[order[dragged],order[i]]=[order[i],order[dragged]];render();status.textContent='已調整，請按「確認並儲存」'}});
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('over');if(dragged!==null&&dragged!==i){[order[dragged],order[i]]=[order[i],order[dragged]];render();saveLocal();status.textContent='已調整座位'}});
     grid.appendChild(el);
   });
+  document.querySelectorAll('.seat').forEach(seat=>{
+    seat.addEventListener('touchstart',handleTouchStart,{passive:false});
+    seat.addEventListener('touchmove',handleTouchMove,{passive:false});
+    seat.addEventListener('touchend',handleTouchEnd,{passive:false});
+  });
+}
+
+let touchDragSource=null;
+function handleTouchStart(e){
+  if(e.target.classList.contains('seat')&&!e.target.classList.contains('empty')){
+    touchDragSource=e.target.dataset.index;
+  }
+}
+function handleTouchMove(e){
+  if(touchDragSource!==null){
+    e.preventDefault();
+    let touch=e.touches[0];
+    let elem=document.elementFromPoint(touch.clientX,touch.clientY);
+    document.querySelectorAll('.seat.over').forEach(x=>x.classList.remove('over'));
+    if(elem&&elem.classList.contains('seat')&&elem.dataset.index!==touchDragSource){
+      elem.classList.add('over');
+    }
+  }
+}
+function handleTouchEnd(e){
+  if(touchDragSource!==null){
+    let touch=e.changedTouches[0];
+    let elem=document.elementFromPoint(touch.clientX,touch.clientY);
+    document.querySelectorAll('.seat.over').forEach(x=>x.classList.remove('over'));
+    if(elem&&elem.classList.contains('seat')&&elem.dataset.index!==touchDragSource){
+      let targetIndex=elem.dataset.index;
+      [order[touchDragSource],order[targetIndex]]=[order[targetIndex],order[touchDragSource]];
+      touchDragSource=null;
+      render();
+      saveLocal();
+      status.textContent='已調整座位';
+    }else{
+      touchDragSource=null;
+    }
+  }
 }
 
 async function loadConfigFromGithub(){
@@ -91,7 +165,7 @@ document.querySelector('#config').onclick=async()=>{
 document.querySelector('#push').onclick=async()=>{
   let cfg=githubConfig||loadGithubConfig();
   if(!cfg||!cfg.owner||!cfg.repo||!cfg.branch){
-    alert('尚未設定 GitHub 資訊，請先按「設定」按鈕。');
+    alert('尚未設定 GitHub 資訊，請先按「設定」按鈕。\n\n目前設定：\nowner: '+(cfg?.owner||'未設定')+'\nrepo: '+(cfg?.repo||'未設定')+'\nbranch: '+(cfg?.branch||'未設定'));
     return;
   }
   if(!cfg.token){
@@ -101,6 +175,7 @@ document.querySelector('#push').onclick=async()=>{
     saveGithubConfig(cfg);
   }
   status.textContent='準備上傳至 GitHub...';
+  status.className='status';
   try{
     let path='seating.json';
     let url=`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
@@ -108,19 +183,30 @@ document.querySelector('#push').onclick=async()=>{
     try{
       let r=await fetch(url,{headers:{Authorization:`token ${cfg.token}`,Accept:'application/vnd.github.v3+json'}});
       if(r.ok){let j=await r.json();sha=j.sha||'';}
+      else if(r.status===404){sha='new';}
     }catch(e){}
     let body={
       message:'更新 113 班座位表（自動）',
       content:btoa(unescape(encodeURIComponent(JSON.stringify(order)))),
       branch:cfg.branch
     };
-    if(sha)body.sha=sha;
+    if(sha&&sha!=='new')body.sha=sha;
+    console.log('上傳 URL:',url);
+    console.log('請求內容:',body);
     let res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${cfg.token}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!res.ok){let t=await res.text();throw new Error(t);}
-    status.textContent='已上傳至 GitHub！下次開啟會自動載入雲端最新版本';
+    console.log('回應狀態:',res.status,res.statusText);
+    if(!res.ok){
+      let t=await res.text();
+      console.log('錯誤內容:',t);
+      throw new Error(`HTTP ${res.status}: ${t}`);
+    }
+    status.textContent='✓ 已上傳至 GitHub！';
+    status.className='status';
   }catch(err){
     console.error(err);
-    status.textContent='上傳失敗，請檢查 owner/repo/branch/token 設定';
+    status.textContent='✗ 上傳失敗：'+err.message;
+    status.className='status error';
+    alert('上傳失敗，詳細錯誤請查看瀏覽器開發者工具（F12）的 Console。\n\n錯誤訊息：'+err.message);
   }
 };
 
