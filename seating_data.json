@@ -1,0 +1,236 @@
+{
+  "title": "高二上英文座位表 Classroom Seating Chart",
+  "updatedAt": "2026-08-31T11:14:00.000Z",
+  "totalStudents": 32,
+  "layout": {
+    "seatsPerRow": 6,
+    "rows": 6,
+    "arrangement": "row"
+  },
+  "seats": [
+    {
+      "seat": 1,
+      "studentId": "310273",
+      "className": "301",
+      "number": "03",
+      "name": "余賽亞"
+    },
+    {
+      "seat": 2,
+      "studentId": "310274",
+      "className": "301",
+      "number": "04",
+      "name": "吳宇昕"
+    },
+    {
+      "seat": 3,
+      "studentId": "310014",
+      "className": "301",
+      "number": "09",
+      "name": "林子辰"
+    },
+    {
+      "seat": 4,
+      "studentId": "310303",
+      "className": "301",
+      "number": "10",
+      "name": "鍾黃保"
+    },
+    {
+      "seat": 5,
+      "studentId": "310259",
+      "className": "301",
+      "number": "20",
+      "name": "馮靖翔"
+    },
+    {
+      "seat": 6,
+      "studentId": "310100",
+      "className": "301",
+      "number": "26",
+      "name": "鄧智城"
+    },
+    {
+      "seat": 7,
+      "studentId": "310275",
+      "className": "302",
+      "number": "02",
+      "name": "吳沁祐"
+    },
+    {
+      "seat": 8,
+      "studentId": "310175",
+      "className": "302",
+      "number": "05",
+      "name": "李孟蒝"
+    },
+    {
+      "seat": 9,
+      "studentId": "310017",
+      "className": "302",
+      "number": "06",
+      "name": "林辰恩"
+    },
+    {
+      "seat": 10,
+      "studentId": "310113",
+      "className": "302",
+      "number": "08",
+      "name": "林秉翰"
+    },
+    {
+      "seat": 11,
+      "studentId": "310091",
+      "className": "302",
+      "number": "16",
+      "name": "郭紘銘"
+    },
+    {
+      "seat": 12,
+      "studentId": "310151",
+      "className": "302",
+      "number": "17",
+      "name": "陳宇傑"
+    },
+    {
+      "seat": 13,
+      "studentId": "310109",
+      "className": "303",
+      "number": "06",
+      "name": "李翊勤"
+    },
+    {
+      "seat": 14,
+      "studentId": "310110",
+      "className": "303",
+      "number": "07",
+      "name": "卓子皓"
+    },
+    {
+      "seat": 15,
+      "studentId": "310185",
+      "className": "303",
+      "number": "15",
+      "name": "莊英濠"
+    },
+    {
+      "seat": 16,
+      "studentId": "310231",
+      "className": "303",
+      "number": "24",
+      "name": "楊晉承"
+    },
+    {
+      "seat": 17,
+      "studentId": "310179",
+      "className": "304",
+      "number": "08",
+      "name": "林兆銓"
+    },
+    {
+      "seat": 18,
+      "studentId": "310281",
+      "className": "304",
+      "number": "14",
+      "name": "洪睿遠"
+    },
+    {
+      "seat": 19,
+      "studentId": "310022",
+      "className": "304",
+      "number": "15",
+      "name": "孫大鈞"
+    },
+    {
+      "seat": 20,
+      "studentId": "310250",
+      "className": "304",
+      "number": "17",
+      "name": "馬翌友"
+    },
+    {
+      "seat": 21,
+      "studentId": "310223",
+      "className": "304",
+      "number": "21",
+      "name": "盛羨"
+    },
+    {
+      "seat": 22,
+      "studentId": "310292",
+      "className": "304",
+      "number": "27",
+      "name": "黃國威"
+    },
+    {
+      "seat": 23,
+      "studentId": "310197",
+      "className": "304",
+      "number": "29",
+      "name": "潘韋廷"
+    },
+    {
+      "seat": 24,
+      "studentId": "310264",
+      "className": "305",
+      "number": "25",
+      "name": "楊宗諺"
+    },
+    {
+      "seat": 25,
+      "studentId": "310040",
+      "className": "306",
+      "number": "08",
+      "name": "李家翔"
+    },
+    {
+      "seat": 26,
+      "studentId": "310026",
+      "className": "306",
+      "number": "23",
+      "name": "陳莨裕"
+    },
+    {
+      "seat": 27,
+      "studentId": "310065",
+      "className": "306",
+      "number": "29",
+      "name": "鄧名劭"
+    },
+    {
+      "seat": 28,
+      "studentId": "310088",
+      "className": "307",
+      "number": "18",
+      "name": "張朔源"
+    },
+    {
+      "seat": 29,
+      "studentId": "310199",
+      "className": "307",
+      "number": "31",
+      "name": "蔡秉睿"
+    },
+    {
+      "seat": 30,
+      "studentId": "310133",
+      "className": "307",
+      "number": "33",
+      "name": "賴冠叡"
+    },
+    {
+      "seat": 31,
+      "studentId": "310228",
+      "className": "308",
+      "number": "27",
+      "name": "黃柏睿"
+    },
+    {
+      "seat": 32,
+      "studentId": "010070",
+      "className": "ERROR",
+      "number": "#N/A",
+      "name": "薛宇廷"
+    }
+  ]
+}
