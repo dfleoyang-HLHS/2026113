@@ -17,28 +17,23 @@
 2. 在 GitHub repository 中編輯 `config.json`，修改以下欄位：
    ```json
    {
-     "owner": "your-github-username",
-     "repo": "class113-seating",
+     "owner": "dfleoyang-HLHS",
+     "repo": "2026113",
      "branch": "main"
    }
    ```
-   - `owner`：您的 GitHub 使用者名稱。
-   - `repo`：這個 repository 的名稱（不含 owner）。
-   - `branch`：分支名稱（預設 `main`）。
 3. 開啟座位表網頁，按下「設定」按鈕。
 4. 輸入 Personal Access Token，按下確定。
 5. 調整座位後，按下「上傳最新版本到 GitHub」，即可將座位表上傳到 repository 中的 `seating.json`。
 
 ## GitHub Pages 部署
 
-1. 建立 repository（例如：`class113-seating`）。
-2. 上傳 `index.html`、`config.json` 到 repository 根目錄。
-3. 進入 **Settings → Pages**。
-4. 在 **Build and deployment** 中選擇：
+1. 進入 **Settings → Pages**。
+2. 在 **Build and deployment** 中選擇：
    - Source：`Deploy from a branch`
    - Branch：`main`
    - Folder：`/ (root)`
-5. 按下 **Save**，稍後即可透過 GitHub Pages 網址開啟座位表。
+3. 按下 **Save**，稍後即可透過 GitHub Pages 網址開啟座位表。
 
 ## 之後使用
 
