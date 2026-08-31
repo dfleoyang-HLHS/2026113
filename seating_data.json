@@ -1,6 +1,6 @@
 {
   "title": "高二上英文座位表",
-  "updatedAt": "2026-08-31T12:34:51.070Z",
+  "updatedAt": "2026-08-31T12:41:19.604Z",
   "totalStudents": 32,
   "layout": {
     "seatsPerRow": 6,
@@ -24,31 +24,31 @@
     },
     {
       "seat": 3,
-      "studentId": "310014",
-      "className": "301",
-      "number": "09",
-      "name": "林子辰"
-    },
-    {
-      "seat": 4,
       "studentId": "310303",
       "className": "301",
       "number": "10",
       "name": "鍾黃保"
     },
     {
-      "seat": 5,
-      "studentId": "310259",
+      "seat": 4,
+      "studentId": "310014",
       "className": "301",
-      "number": "20",
-      "name": "馮靖翔"
+      "number": "09",
+      "name": "林子辰"
     },
     {
-      "seat": 6,
+      "seat": 5,
       "studentId": "310100",
       "className": "301",
       "number": "26",
       "name": "鄧智城"
+    },
+    {
+      "seat": 6,
+      "studentId": "310259",
+      "className": "301",
+      "number": "20",
+      "name": "馮靖翔"
     },
     {
       "seat": 7,
